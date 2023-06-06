@@ -1,7 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthRoute } from "./CustomRouter";
 
-const authRoutes = [];
+import Register from "../pages/Auth/Register";
+
+const authRoutes = [{ path: "/auth/register", component: Register }];
 
 export const AuthRoutes = () => (
   <Routes>
