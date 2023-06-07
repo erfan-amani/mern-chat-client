@@ -3,8 +3,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "./validation";
 import landingImage1 from "@/assets/images/landing-bg.png";
 import { Link } from "react-router-dom";
+import { register as registerAction } from "@/store/reducers/auth/asyncActions";
+import { useDispatch } from "react-redux";
 
 const Register = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -13,18 +16,18 @@ const Register = () => {
     resolver: yupResolver(registerSchema),
   });
 
-  const onSubmit = data => {
-    console.log(data);
+  const onSubmit = async data => {
+    dispatch(registerAction(data));
   };
 
   console.log(errors.password);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
-      <div className="flex items-center w-[55%] h-full bg-indigo-50">
-        <div className="w-[70%] px-10">
+      <div className="flex items-center justify-center md:justify-start w-screen md:w-[45%] h-full bg-indigo-50">
+        <div className="w-[90%] sm:w-[80%] md:max-w-[600px] mx-auto md:mx-0 px-10">
           <div className="flex flex-col gap-3 mb-8">
-            <p className="text-gray-500 ">start for free</p>
+            <p className="text-gray-500 uppercase">start for free</p>
             <h2 className="text-4xl font-semibold text-gray-800">
               Create new account
             </h2>
@@ -74,8 +77,8 @@ const Register = () => {
         </div>
       </div>
 
-      <div className="w-[45%]">
-        <img src={landingImage1} alt="" />
+      <div className="invisible hidden md:block md:visible w-[55%]">
+        <img src={landingImage1} alt="" className="w-[85%] mx-auto" />
       </div>
     </div>
   );

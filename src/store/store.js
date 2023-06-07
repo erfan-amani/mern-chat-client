@@ -19,15 +19,7 @@ const persistedAuthReducer = persistReducer(
   {
     key: "site.auth",
     storage,
-    whitelist: [
-      "user",
-      "address",
-      "accessToken",
-      "referredCode",
-      "refreshToken",
-      "accessTokenExpire",
-      "refreshTokenExpire",
-    ],
+    whitelist: ["user", "accessToken"],
   },
   authSlice.reducer
 );
@@ -48,7 +40,7 @@ const rootReducer = combineReducers({
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false,
     }),

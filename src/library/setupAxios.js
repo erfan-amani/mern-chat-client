@@ -5,22 +5,17 @@ export default function setupAxios(axios, store) {
 
   // set token
   axios.interceptors.request.use(
-    (config) => {
+    config => {
       const state = store.getState();
       const accessToken = state?.auth?.accessToken;
-      const referredCode = state?.auth?.referredCode;
 
       if (accessToken) {
         config.headers.authorization = `Bearer ${accessToken}`;
       }
 
-      if (referredCode) {
-        config.headers.referredCode = referredCode;
-      }
-
       return config;
     },
-    (error) => Promise.reject(error)
+    error => Promise.reject(error)
   );
 
   axios.interceptors.response.use(
