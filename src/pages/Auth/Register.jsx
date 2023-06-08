@@ -4,9 +4,10 @@ import { registerSchema } from "./validation";
 import landingImage1 from "@/assets/images/landing-bg.png";
 import { Link } from "react-router-dom";
 import { register as registerAction } from "@/store/reducers/auth/asyncActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Register = () => {
+  const { pending, error: registerError } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const {
     register,
@@ -17,10 +18,10 @@ const Register = () => {
   });
 
   const onSubmit = async data => {
+    if (pending) return;
+
     dispatch(registerAction(data));
   };
-
-  console.log(errors.password);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -43,6 +44,12 @@ const Register = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
+            {registerError && (
+              <div className="p-2 border-2 border-red-500 bg-red-100 rounded-md">
+                <p>{registerError}</p>
+              </div>
+            )}
+
             <div>
               <input
                 type="text"
@@ -52,7 +59,9 @@ const Register = () => {
                 {...register("username")}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
-              {errors.username && <p>{errors.username.message}</p>}
+              {errors.username && (
+                <p className="text-red-500">{errors.username.message}</p>
+              )}
             </div>
 
             <div>
@@ -64,12 +73,15 @@ const Register = () => {
                 {...register("password")}
                 className="border border-gray-300 rounded-md p-2 w-full"
               />
-              {errors.password && <p>{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-red-500">{errors.password.message}</p>
+              )}
             </div>
 
             <button
               type="submit"
-              className="p-2 bg-indigo-500 text-white rounded-md"
+              className="p-2 bg-indigo-500 text-white rounded-md disabled:bg-slate-300 disabled:cursor-not-allowed"
+              disabled={pending}
             >
               Register
             </button>
