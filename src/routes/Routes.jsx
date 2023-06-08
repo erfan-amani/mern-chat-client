@@ -1,25 +1,37 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import PrivateRoutes from "./PrivateRoutes";
-import PublicRoutes from "./PublicRoutes";
-import AuthRoutes from "./AuthRoutes";
+import renderPrivateRoutes from "./PrivateRoutes";
+import renderPublicRoutes from "./PublicRoutes";
+import renderAuthRoutes from "./AuthRoutes";
+import { useSelector } from "react-redux";
 
-const AppRoutes = ({ children }) => (
-  <BrowserRouter>
-    {children}
+const AppRoutes = ({ children }) => {
+  const isAuthorized = useSelector(state => !!state.auth.user);
 
-    {/* <Routes>
-      <Route path="*" element={<Navbar />} />
-    </Routes> */}
+  return (
+    <BrowserRouter>
+      <Routes>
+        {children}
 
-    <PublicRoutes />
-    <AuthRoutes />
-    <PrivateRoutes />
+        {/* <Routes>
+        <Route path="*" element={<Navbar />} />
+      </Routes> */}
 
-    {/* <Routes>
-      <Route path="*" element={<Footer />} />
-    </Routes> */}
-  </BrowserRouter>
-);
+        {renderPublicRoutes()}
+        {renderAuthRoutes()}
+        {renderPrivateRoutes()}
+
+        {/* <Routes>
+        <Route path="*" element={<Footer />} />
+      </Routes> */}
+
+        <Route
+          path="*"
+          element={<Navigate to={isAuthorized ? "/chat" : "/auth/register"} />}
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
 export default AppRoutes;

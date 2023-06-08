@@ -5,23 +5,20 @@ import Register from "../pages/Auth/Register";
 
 const authRoutes = [{ path: "/auth/register", component: Register }];
 
-export const AuthRoutes = () => (
-  <Routes>
-    {authRoutes.map(({ exact = false, path, component: Component }, i) => {
-      return (
-        <Route
-          key={i}
-          exact={exact}
-          path={path}
-          element={
-            <AuthRoute>
-              <Component />
-            </AuthRoute>
-          }
-        />
-      );
-    })}
-  </Routes>
-);
+export const renderAuthRoutes = () =>
+  authRoutes.map(({ exact = false, path, component: Component }, i) => {
+    return (
+      <Route
+        key={i}
+        exact={exact}
+        path={path}
+        element={
+          <AuthRoute>
+            <Component />
+          </AuthRoute>
+        }
+      />
+    );
+  });
 
-export default AuthRoutes;
+export default renderAuthRoutes;
