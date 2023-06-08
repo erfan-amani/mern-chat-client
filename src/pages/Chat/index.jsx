@@ -17,6 +17,10 @@ const Chat = () => {
       },
     });
 
+    socket.on("chatData", users => {
+      console.log(users);
+    });
+
     socket.on("connect_error", err => {
       console.log(err.message);
     });
