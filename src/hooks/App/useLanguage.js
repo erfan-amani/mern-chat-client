@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRefresh } from "../../store/reducers/setting/settingSlice";
 
 const useLanguage = () => {
-  const lang = useSelector((state) => state.setting.lang);
+  const lang = useSelector(state => state.setting.lang);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -16,13 +16,13 @@ const useLanguage = () => {
     );
 
     if (lang === "en") {
-      document.title = "Page title";
+      document.title = "Chat";
 
       document.body.classList.remove("font-fa");
     }
 
     if (lang === "fa") {
-      document.title = "Page title";
+      document.title = "Chat";
 
       document.body.classList.add("font-fa");
     }
