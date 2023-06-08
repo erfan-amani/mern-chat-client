@@ -4,5 +4,9 @@ const registerSchema = yup.object().shape({
   username: yup.string().required(),
   password: yup.string().min(8).max(32).required(),
 });
+const loginSchema = yup.object().shape({
+  username: yup.string().required(),
+  password: yup.string().min(8).max(32).required(),
+});
 
-export { registerSchema };
+export { registerSchema, loginSchema };

@@ -19,4 +19,21 @@ const register = createAsyncThunk(
   }
 );
 
-export { register };
+const login = createAsyncThunk(
+  "auth/login",
+  async ({ username, password }, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const response = await axios.post("auth/login", {
+        username,
+        password,
+      });
+      const data = response.data;
+
+      return fulfillWithValue(data);
+    } catch (err) {
+      return rejectWithValue(err.response.data || err);
+    }
+  }
+);
+
+export { register, login };

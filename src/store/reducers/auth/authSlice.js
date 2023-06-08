@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { register } from "./asyncActions";
+import { register, login } from "./asyncActions";
 
 const initialState = {
   user: null,
@@ -59,6 +59,30 @@ const authSlice = createSlice({
       .addCase(register.rejected, (state, { payload }) => {
         state.error = payload;
         state.status = "register:rejected";
+        state.pending = false;
+      })
+      // LOGIN
+      .addCase(login.pending, () => {
+        const newState = {
+          ...initialState,
+          pending: true,
+          status: "login:pending",
+        };
+
+        return newState;
+      })
+      .addCase(login.fulfilled, (state, { payload }) => {
+        const { token, user } = payload || {};
+
+        state.pending = false;
+        state.error = null;
+        state.user = user;
+        state.accessToken = token;
+        state.status = "login:fulfilled";
+      })
+      .addCase(login.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.status = "login:rejected";
         state.pending = false;
       });
   },
