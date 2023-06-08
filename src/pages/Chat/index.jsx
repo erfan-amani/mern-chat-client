@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 
@@ -9,6 +9,7 @@ import { BASE_URL } from "@/library/config";
 
 const Chat = () => {
   const token = useSelector(state => state.auth.accessToken);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
     const socket = io(BASE_URL, {
@@ -18,7 +19,7 @@ const Chat = () => {
     });
 
     socket.on("chatData", users => {
-      console.log(users);
+      setOnlineUsers(users);
     });
 
     socket.on("connect_error", err => {
@@ -28,16 +29,16 @@ const Chat = () => {
 
   return (
     <div className="flex w-screen h-screen">
-      <div className="w-[200px] bg-indigo-50 p-4">
-        <Sidbar />
+      <div className="w-[250px] bg-indigo-50">
+        <Sidbar onlineUsers={onlineUsers} />
       </div>
 
-      <div className="flex flex-col w-[calc(100%-200px)]">
-        <div className="h-[calc(100%-50px)] p-4">
+      <div className="flex flex-col w-[calc(100%-250px)]">
+        <div className="h-[calc(100%-50px)]">
           <Messages />
         </div>
 
-        <div className="h-[50px] p-4">
+        <div className="h-[50px] p-4 border-t-2 border-indigo-100">
           <SendMessage />
         </div>
       </div>
