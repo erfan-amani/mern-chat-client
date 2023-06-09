@@ -12,39 +12,40 @@ import { useSelector } from "react-redux";
 const Messages = () => {
   const user = useSelector(state => state.auth.user);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeUser, setActiveUser] = useState({});
+  const [recieverUser, setReciverUser] = useState({});
   const selectedUserId = searchParams.get("id");
 
   useEffect(() => {
     const getUser = async () => {
       const response = await axios.get(`user/${selectedUserId}`);
       const data = response.data;
-      setActiveUser(data);
+      setReciverUser(data);
     };
 
-    getUser();
+    if (!!selectedUserId) getUser();
   }, [selectedUserId]);
 
   useEffect(() => {
+    const sender = user._id;
+    const reciever = selectedUserId;
+
     const getRoom = async () => {
       try {
         const response = await axios.get("room", {
-          params: { sender: user._id, reciever: selectedUserId },
+          params: { sender, reciever },
         });
         const room = response.data;
-
-        console.log({ room });
       } catch (err) {}
     };
 
-    getRoom();
+    if (!!sender && !!reciever) getRoom();
   }, [user._id, selectedUserId]);
 
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b-2 border-indigo-100 w-full">
         <div className="flex items-center justify-between">
-          <Avatar user={activeUser} withDetail />
+          <Avatar user={recieverUser} withDetail />
 
           <div className="flex gap-5 items-center">
             <button>
