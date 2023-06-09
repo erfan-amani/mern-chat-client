@@ -6,12 +6,23 @@ import {
 import Avatar from "@/components/Avatar";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const Sidbar = ({ onlineUsers = [], userMessages }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
 
-  console.log(user);
+  const selectedUserId = searchParams.get("id");
+
+  useEffect(() => {
+    const others = onlineUsers.filter(u => u._id !== user._id);
+    const defaultId = others?.[0]?._id;
+
+    if (!!defaultId || !selectedUserId || selectedUserId === user?._id)
+      setSearchParams({ id: defaultId });
+  }, [onlineUsers]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -57,14 +68,20 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
 
           <div className="w-full overflow-hidden relative">
             <div className="flex gap-3 items-center">
-              {onlineUsers?.map(user => (
-                <button key={user._id}>
-                  <div className="flex flex-col gap-1 items-center justify-center">
-                    <Avatar user={user} />
-                    <p className="text-xs opacity-70">{user.username}</p>
-                  </div>
-                </button>
-              ))}
+              {onlineUsers?.map(
+                u =>
+                  u._id !== user?._id && (
+                    <button
+                      onClick={() => setSearchParams({ id: u._id })}
+                      key={u._id}
+                    >
+                      <div className="flex flex-col gap-1 items-center justify-center">
+                        <Avatar user={u} />
+                        <p className="text-xs opacity-70">{u.username}</p>
+                      </div>
+                    </button>
+                  )
+              )}
             </div>
           </div>
         </div>
@@ -81,17 +98,25 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
             style={{ maxHeight: containerRef?.current?.offsetHeight || "100%" }}
           >
             <div className="flex flex-col">
-              {userMessages?.map(user => (
-                <button className="px-3 py-3 hover:bg-slate-300" key={user._id}>
-                  <div className="flex gap-1 justify-between">
-                    <Avatar user={user} withDetail />
+              {onlineUsers?.map(
+                u =>
+                  u._id !== user?._id && (
+                    <button
+                      className={`px-3 py-3 hover:bg-slate-300 ${
+                        selectedUserId === u._id && "bg-slate-300"
+                      }`}
+                      key={u._id}
+                    >
+                      <div className="flex gap-1 justify-between">
+                        <Avatar user={u} withDetail />
 
-                    <div>
-                      <span className="text-xs">18:20 pm</span>
-                    </div>
-                  </div>
-                </button>
-              ))}
+                        <div>
+                          <span className="text-xs">18:20 pm</span>
+                        </div>
+                      </div>
+                    </button>
+                  )
+              )}
             </div>
           </div>
         </div>
