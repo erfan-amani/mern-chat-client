@@ -7,8 +7,10 @@ import Avatar from "@/components/Avatar";
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "@/library/http";
+import { useSelector } from "react-redux";
 
 const Messages = () => {
+  const user = useSelector(state => state.auth.user);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeUser, setActiveUser] = useState({});
   const selectedUserId = searchParams.get("id");
@@ -22,6 +24,21 @@ const Messages = () => {
 
     getUser();
   }, [selectedUserId]);
+
+  useEffect(() => {
+    const getRoom = async () => {
+      try {
+        const response = await axios.get("room", {
+          params: { sender: user._id, reciever: selectedUserId },
+        });
+        const room = response.data;
+
+        console.log({ room });
+      } catch (err) {}
+    };
+
+    getRoom();
+  }, [user._id, selectedUserId]);
 
   return (
     <div className="flex flex-col h-full">
