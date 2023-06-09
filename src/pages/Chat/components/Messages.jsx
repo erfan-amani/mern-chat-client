@@ -22,7 +22,7 @@ const Messages = () => {
       setReciverUser(data);
     };
 
-    if (!!selectedUserId) getUser();
+    if (!!selectedUserId && selectedUserId !== "undefined") getUser();
   }, [selectedUserId]);
 
   useEffect(() => {
@@ -38,7 +38,10 @@ const Messages = () => {
       } catch (err) {}
     };
 
-    if (!!sender && !!reciever) getRoom();
+    if (!!sender && !!reciever && reciever !== "undefined") {
+      console.log("hereeee");
+      getRoom();
+    }
   }, [user._id, selectedUserId]);
 
   return (
