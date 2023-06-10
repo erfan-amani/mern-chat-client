@@ -7,11 +7,14 @@ import {
 import Avatar from "@/components/Avatar";
 import { useSearchParams } from "react-router-dom";
 import axios from "@/library/http";
+import Message from "./Message";
 
-const Messages = ({ socket }) => {
+const Messages = ({ socket, setRoom, room }) => {
+  const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState({});
   const [searchParams] = useSearchParams();
   const otherUserId = searchParams.get("id");
+  const isSocketConnected = socket?.connected;
 
   useEffect(() => {
     const getOtherUser = async () => {
@@ -32,6 +35,39 @@ const Messages = ({ socket }) => {
     }
   }, [otherUserId]);
 
+  useEffect(() => {
+    const initializeMessages = async () => {
+      const response = await axios.get("/message", {
+        params: { room: room._id },
+      });
+      const data = response.data || [];
+
+      setMessages(prev => [...data, ...prev]);
+    };
+
+    if (!!room._id) initializeMessages();
+  }, [room]);
+
+  useEffect(() => {
+    if (!isSocketConnected) return;
+
+    socket.emit("join", otherUserId, room => {
+      console.log(`Joined successfully: ${room._id}`);
+      setRoom(room);
+    });
+  }, [otherUserId, isSocketConnected]);
+
+  useEffect(() => {
+    if (!isSocketConnected) return;
+
+    socket.on("message", message => {
+      console.log({ message });
+      if (!!message) setMessages(prev => [...prev, message]);
+    });
+  }, [isSocketConnected]);
+
+  console.log({ messages });
+
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b-2 border-indigo-100 w-full">
@@ -51,7 +87,12 @@ const Messages = ({ socket }) => {
           </div>
         </div>
       </div>
-      <div className="p-4 flex-1"></div>
+
+      <div className="flex flex-col gap-3 p-4">
+        {messages.map(message => (
+          <Message key={message._id} message={message} />
+        ))}
+      </div>
     </div>
   );
 };
