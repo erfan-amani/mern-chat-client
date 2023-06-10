@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   PhoneIcon,
   VideoCameraIcon,
@@ -5,10 +6,31 @@ import {
 } from "@heroicons/react/24/outline";
 import Avatar from "@/components/Avatar";
 import { useSearchParams } from "react-router-dom";
+import axios from "@/library/http";
 
-const Messages = ({ otherUser, socket }) => {
+const Messages = ({ socket }) => {
+  const [otherUser, setOtherUser] = useState({});
   const [searchParams] = useSearchParams();
-  const recieverId = searchParams.get("id");
+  const otherUserId = searchParams.get("id");
+
+  useEffect(() => {
+    const getOtherUser = async () => {
+      try {
+        const response = await axios.get(`user/${otherUserId}`);
+        const user = response.data;
+
+        if (!!user._id) {
+          setOtherUser(user);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (!!otherUserId && otherUserId !== "undefined") {
+      getOtherUser();
+    }
+  }, [otherUserId]);
 
   return (
     <div className="flex flex-col h-full">

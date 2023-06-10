@@ -1,7 +1,7 @@
 import { PaperClipIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "react-router-dom";
 
-const SendMessage = ({ otherUser, socket }) => {
+const SendMessage = ({ socket }) => {
   const [searchParams] = useSearchParams();
   const selectedUserId = searchParams.get("id");
 
