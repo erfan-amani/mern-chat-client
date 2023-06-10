@@ -1,16 +1,24 @@
 import { PaperClipIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "react-router-dom";
 
-const SendMessage = ({ socket }) => {
+const SendMessage = ({ socket, room }) => {
   const [searchParams] = useSearchParams();
   const selectedUserId = searchParams.get("id");
 
   const onSubmit = event => {
     event.preventDefault();
 
-    const text = event.target.message.value;
+    const inputEl = event.target.message;
+    const text = inputEl.value;
 
-    socket.emit("sendMessage", { text });
+    if (!text) return;
+
+    // reset input
+    inputEl.value = "";
+    inputEl.focus();
+
+    // send message
+    socket.emit("sendMessage", { text, room: room._id });
   };
 
   return (
