@@ -6,7 +6,7 @@ import {
 import Avatar from "@/components/Avatar";
 import { useSearchParams } from "react-router-dom";
 
-const Messages = ({ room }) => {
+const Messages = ({ room, socket }) => {
   const [searchParams] = useSearchParams();
   const recieverId = searchParams.get("id");
   const recieverUser = room?.users?.find?.(u => u._id === recieverId);

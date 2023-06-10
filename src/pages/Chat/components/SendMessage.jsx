@@ -1,14 +1,16 @@
 import { PaperClipIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
 import { useSearchParams } from "react-router-dom";
 
-const SendMessage = () => {
+const SendMessage = ({ room, socket }) => {
   const [searchParams] = useSearchParams();
   const selectedUserId = searchParams.get("id");
 
   const onSubmit = event => {
     event.preventDefault();
 
-    if (!selectedUserId) return;
+    const text = event.target.message.value;
+
+    socket.emit("sendMessage", { text, room: room._id });
   };
 
   return (
@@ -25,6 +27,7 @@ const SendMessage = () => {
           <form onSubmit={onSubmit} className="flex-1">
             <div className="flex">
               <input
+                name="message"
                 placeholder="Your message"
                 className="focus-visible:outline-none w-full text-sm bg-transparent"
               />
