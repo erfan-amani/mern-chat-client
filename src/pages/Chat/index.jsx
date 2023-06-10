@@ -10,12 +10,11 @@ import { BASE_URL } from "@/library/config";
 
 const Chat = () => {
   const socketRef = useRef();
-  const token = useSelector(state => state.auth.accessToken);
-  const { accessToken, user } = useSelector(state => state.auth);
+  const { accessToken: token, user } = useSelector(state => state.auth);
   const [searchParams] = useSearchParams();
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [room, setRoom] = useState({});
-  const selectedUserId = searchParams.get("id");
+  const [otherUser, setOtherUser] = useState({});
+  const otherUserId = searchParams.get("id");
 
   useEffect(() => {
     const socket = io(BASE_URL, { auth: { token } });
@@ -39,29 +38,23 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    const sender = user._id;
-    const reciever = selectedUserId;
-
-    const getRoom = async () => {
+    const getOtherUser = async () => {
       try {
-        const response = await axios.get("room", {
-          params: { sender, reciever },
-        });
+        const response = await axios.get(`user/${otherUserId}`);
+        const user = response.data;
 
-        const room = response.data;
-
-        if (!!room._id) {
-          setRoom(room);
+        if (!!user._id) {
+          setOtherUser(user);
         }
       } catch (err) {
         console.log(err);
       }
     };
 
-    if (!!sender && !!reciever && reciever !== "undefined") {
-      getRoom();
+    if (!!otherUserId && otherUserId !== "undefined") {
+      getOtherUser();
     }
-  }, [user._id, selectedUserId]);
+  }, [user._id, otherUserId]);
 
   return (
     <div className="flex w-screen h-screen">
@@ -71,11 +64,11 @@ const Chat = () => {
 
       <div className="flex flex-col w-[calc(100%-250px)]">
         <div className="h-[calc(100%-50px)]">
-          <Messages room={room} socket={socketRef.current} />
+          <Messages otherUser={otherUser} socket={socketRef.current} />
         </div>
 
         <div className="h-[50px] p-4 border-t-2 border-indigo-100">
-          <SendMessage room={room} socket={socketRef.current} />
+          <SendMessage otherUser={otherUser} socket={socketRef.current} />
         </div>
       </div>
     </div>
