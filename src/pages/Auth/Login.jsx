@@ -4,6 +4,7 @@ import { loginSchema } from "./validation";
 import landingImage1 from "@/assets/images/landing-bg.png";
 import { Link } from "react-router-dom";
 import { login as loginAction } from "@/store/reducers/auth/asyncActions";
+import { resetAuthState } from "@/store/reducers/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
@@ -34,7 +35,11 @@ const Login = () => {
             </h2>
             <p className="text-gray-500">
               Need A New Account?{" "}
-              <Link to="/auth/register" className="text-indigo-500">
+              <Link
+                to="/auth/register"
+                className="text-indigo-500"
+                onClick={() => dispatch(resetAuthState())}
+              >
                 register
               </Link>
             </p>

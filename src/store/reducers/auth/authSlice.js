@@ -34,6 +34,9 @@ const authSlice = createSlice({
     setReferral: (state, { payload }) => {
       state.referredCode = payload.referredCode;
     },
+    resetAuthState: () => {
+      return initialState;
+    },
   },
 
   extraReducers: builder => {
@@ -114,6 +117,7 @@ export const {
   readNotifications,
   logout,
   setReferral,
+  resetAuthState,
 } = authSlice.actions;
 
 export default authSlice;

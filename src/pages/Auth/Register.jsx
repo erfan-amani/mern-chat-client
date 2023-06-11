@@ -4,6 +4,7 @@ import { registerSchema } from "./validation";
 import landingImage1 from "@/assets/images/landing-bg.png";
 import { Link } from "react-router-dom";
 import { register as registerAction } from "@/store/reducers/auth/asyncActions";
+import { resetAuthState } from "@/store/reducers/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Register = () => {
@@ -34,7 +35,11 @@ const Register = () => {
             </h2>
             <p className="text-gray-500">
               Already A Member?{" "}
-              <Link to="/auth/login" className="text-indigo-500">
+              <Link
+                to="/auth/login"
+                className="text-indigo-500"
+                onClick={() => dispatch(resetAuthState())}
+              >
                 login
               </Link>
             </p>
