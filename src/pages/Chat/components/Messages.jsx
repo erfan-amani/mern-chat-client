@@ -49,7 +49,8 @@ const Messages = ({ socket, setRoom, room }) => {
   }, [room]);
 
   useEffect(() => {
-    if (!isSocketConnected) return;
+    if (!isSocketConnected || !otherUserId || otherUserId === "undefined")
+      return;
 
     socket.emit("join", otherUserId, room => {
       console.log(`Joined successfully: ${room._id}`);
