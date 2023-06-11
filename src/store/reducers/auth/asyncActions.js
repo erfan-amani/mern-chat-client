@@ -1,6 +1,21 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-
 import axios from "@/library/http";
+
+const getUser = createAsyncThunk(
+  "auth/user",
+  async (_, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const response = await axios.get("user/profile");
+      const data = response.data;
+
+      console.log(data);
+
+      return fulfillWithValue(data);
+    } catch (err) {
+      return rejectWithValue(err.response.data || err);
+    }
+  }
+);
 
 const register = createAsyncThunk(
   "auth/register",
@@ -36,4 +51,4 @@ const login = createAsyncThunk(
   }
 );
 
-export { register, login };
+export { getUser, register, login };

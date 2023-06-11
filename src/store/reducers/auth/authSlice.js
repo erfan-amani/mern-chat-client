@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { register, login } from "./asyncActions";
+import { getUser, register, login } from "./asyncActions";
 
 const initialState = {
   user: null,
@@ -28,8 +28,8 @@ const authSlice = createSlice({
     logout: state => {
       state.status = "idle";
       state.user = null;
+      state.error = null;
       state.accessToken = null;
-      state.logoutError = null;
     },
     setReferral: (state, { payload }) => {
       state.referredCode = payload.referredCode;
@@ -84,6 +84,26 @@ const authSlice = createSlice({
         state.error = payload;
         state.status = "login:rejected";
         state.pending = false;
+      })
+      .addCase(getUser.pending, () => {
+        state.pending = true;
+        state.error = null;
+        state.status = "user:pending";
+      })
+      .addCase(getUser.fulfilled, (state, { payload }) => {
+        const { user } = payload || {};
+
+        state.pending = false;
+        state.error = null;
+        state.user = user;
+        state.status = "user:fulfilled";
+      })
+      .addCase(getUser.rejected, (state, { payload }) => {
+        state.error = payload;
+        state.status = "user:rejected";
+        state.pending = false;
+        state.user = null;
+        state.accessToken = null;
       });
   },
 });
