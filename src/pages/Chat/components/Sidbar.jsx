@@ -53,6 +53,12 @@ const Sidbar = ({ onlineUsers = [], socket }) => {
     });
   }, [isSocketConnected]);
 
+  useEffect(() => {
+    if (!isSocketConnected) return;
+
+    socket.emit("joinAll");
+  }, [isSocketConnected]);
+
   return (
     <div className="h-screen flex flex-col">
       <div className="border-b-2 border-white h-[66px]">
