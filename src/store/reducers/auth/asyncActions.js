@@ -8,8 +8,6 @@ const getUser = createAsyncThunk(
       const response = await axios.get("user/profile");
       const data = response.data;
 
-      console.log(data);
-
       return fulfillWithValue(data);
     } catch (err) {
       return rejectWithValue(err.response.data || err);

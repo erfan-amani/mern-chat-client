@@ -27,10 +27,6 @@ const Chat = () => {
     socket.on("connect_error", err => {
       console.log(err.message);
     });
-
-    socket.on("message", message => {
-      console.log(message);
-    });
   }, [token]);
 
   return (

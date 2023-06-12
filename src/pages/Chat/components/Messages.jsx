@@ -53,7 +53,6 @@ const Messages = ({ socket, setRoom, room }) => {
       return;
 
     socket.emit("join", otherUserId, room => {
-      console.log(`Joined successfully: ${room._id}`);
       setRoom(room);
     });
   }, [otherUserId, isSocketConnected]);
@@ -62,12 +61,9 @@ const Messages = ({ socket, setRoom, room }) => {
     if (!isSocketConnected) return;
 
     socket.on("message", message => {
-      console.log({ message });
       if (!!message) setMessages(prev => [...prev, message]);
     });
   }, [isSocketConnected]);
-
-  console.log({ messages });
 
   return (
     <div className="flex flex-col h-full">
