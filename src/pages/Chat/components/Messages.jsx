@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "@/library/http";
 import Message from "./Message";
 
-const Messages = ({ socket, setRoom, room }) => {
+const Messages = ({ socket, setRoom, room, onlineUsers }) => {
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState({});
   const [searchParams] = useSearchParams();
@@ -69,7 +69,11 @@ const Messages = ({ socket, setRoom, room }) => {
     <div className="flex flex-col h-full">
       <div className="p-3 border-b-2 border-indigo-100 w-full h-[66px]">
         <div className="flex items-center justify-between">
-          <Avatar user={otherUser || {}} withDetail />
+          <Avatar
+            user={otherUser || {}}
+            onlineBadge={onlineUsers.find(ou => ou._id === otherUser._id)}
+            withDetail
+          />
 
           <div className="flex gap-5 items-center">
             <button>

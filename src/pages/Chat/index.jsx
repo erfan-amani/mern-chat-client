@@ -37,7 +37,12 @@ const Chat = () => {
 
       <div className="flex flex-col w-[calc(100%-250px)]">
         <div className="h-[calc(100%-50px)]">
-          <Messages room={room} setRoom={setRoom} socket={socketRef.current} />
+          <Messages
+            room={room}
+            setRoom={setRoom}
+            socket={socketRef.current}
+            onlineUsers={onlineUsers}
+          />
         </div>
 
         <div className="h-[50px] p-4 border-t-2 border-indigo-100">

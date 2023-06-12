@@ -128,6 +128,9 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
                         <Avatar
                           user={room.otherUser}
                           desc={room.lastMessage.text}
+                          onlineBadge={onlineUsers.find(
+                            ou => ou._id === room.otherUser._id
+                          )}
                           withDetail
                         />
 
