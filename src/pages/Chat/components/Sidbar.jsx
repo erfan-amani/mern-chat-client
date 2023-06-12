@@ -40,7 +40,7 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
 
   return (
     <div className="h-screen flex flex-col">
-      <div className="border-b-2 border-white">
+      <div className="border-b-2 border-white h-[66px]">
         <div className="flex p-3">
           <div className="flex-1">
             <div className="flex gap-2">
