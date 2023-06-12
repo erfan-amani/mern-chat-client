@@ -1,6 +1,6 @@
 import React from "react";
 
-const Avatar = ({ user, withDetail = false }) => {
+const Avatar = ({ user, desc = "Nothing yet", withDetail = false }) => {
   return (
     <div className="flex gap-2">
       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-400 text-white">
@@ -10,7 +10,7 @@ const Avatar = ({ user, withDetail = false }) => {
       {withDetail && (
         <div className="flex flex-col items-start justify-between">
           <p className="text-sm font-medium">{user.username}</p>
-          <p className="text-xs opacity-80">Nothing yet</p>
+          <p className="text-xs opacity-80">{desc}</p>
         </div>
       )}
     </div>

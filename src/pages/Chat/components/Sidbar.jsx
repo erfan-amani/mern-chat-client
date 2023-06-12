@@ -5,12 +5,14 @@ import {
 } from "@heroicons/react/24/outline";
 import Avatar from "@/components/Avatar";
 import { useSelector } from "react-redux";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
+import axios from "@/library/http";
 
 const Sidbar = ({ onlineUsers = [], userMessages }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeRooms, setActiveRooms] = useState();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
 
@@ -24,6 +26,17 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
   //   if (!!defaultId || !selectedUserId || selectedUserId === user?._id)
   //     setSearchParams({ id: defaultId });
   // }, [onlineUsers]);
+
+  useEffect(() => {
+    const getActiveRooms = async () => {
+      const response = await axios.get("room/active");
+      const data = response.data;
+
+      setActiveRooms(data);
+    };
+
+    getActiveRooms();
+  }, []);
 
   return (
     <div className="h-screen flex flex-col">
@@ -99,17 +112,24 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
             style={{ maxHeight: containerRef?.current?.offsetHeight || "100%" }}
           >
             <div className="flex flex-col">
-              {onlineUsers?.map(
-                u =>
-                  u._id !== user?._id && (
+              {activeRooms?.map(
+                room =>
+                  room.otherUser._id !== user?._id && (
                     <button
                       className={`px-3 py-3 hover:bg-slate-300 ${
-                        selectedUserId === u._id && "bg-slate-300"
+                        selectedUserId === room.otherUser._id && "bg-slate-200"
                       }`}
-                      key={u._id}
+                      key={room.otherUser._id}
+                      onClick={() =>
+                        setSearchParams({ id: room.otherUser._id })
+                      }
                     >
                       <div className="flex gap-1 justify-between">
-                        <Avatar user={u} withDetail />
+                        <Avatar
+                          user={room.otherUser}
+                          desc={room.lastMessage.text}
+                          withDetail
+                        />
 
                         <div>
                           <span className="text-xs">18:20 pm</span>
