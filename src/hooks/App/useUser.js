@@ -1,14 +1,16 @@
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "@/store/reducers/auth/asyncActions";
 
 const useUser = () => {
+  const accessToken = useSelector(state => state.auth.accessToken);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("here");
+    if (!accessToken) return;
+
     dispatch(getUser());
-  }, []);
+  }, [accessToken]);
 };
 
 export default useUser;

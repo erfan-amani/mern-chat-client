@@ -3,7 +3,7 @@ import axios from "@/library/http";
 
 const getUser = createAsyncThunk(
   "auth/user",
-  async (_, { rejectWithValue, fulfillWithValue, dispatch }) => {
+  async (ـ, { rejectWithValue, fulfillWithValue }) => {
     try {
       const response = await axios.get("user/profile");
       const data = response.data;

@@ -88,17 +88,15 @@ const authSlice = createSlice({
         state.status = "login:rejected";
         state.pending = false;
       })
-      .addCase(getUser.pending, () => {
+      .addCase(getUser.pending, state => {
         state.pending = true;
         state.error = null;
         state.status = "user:pending";
       })
       .addCase(getUser.fulfilled, (state, { payload }) => {
-        const { user } = payload || {};
-
+        state.user = payload;
         state.pending = false;
         state.error = null;
-        state.user = user;
         state.status = "user:fulfilled";
       })
       .addCase(getUser.rejected, (state, { payload }) => {
