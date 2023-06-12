@@ -10,22 +10,14 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "@/library/http";
 
-const Sidbar = ({ onlineUsers = [], userMessages }) => {
+const Sidbar = ({ onlineUsers = [], socket }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeRooms, setActiveRooms] = useState();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
+  const isSocketConnected = socket?.connected;
 
   const selectedUserId = searchParams.get("id");
-
-  // BUG: MAKE BUG IN JOIN ROOM IN BACKEND CODE
-  // useEffect(() => {
-  //   const others = onlineUsers.filter(u => u._id !== user._id);
-  //   const defaultId = others?.[0]?._id;
-
-  //   if (!!defaultId || !selectedUserId || selectedUserId === user?._id)
-  //     setSearchParams({ id: defaultId });
-  // }, [onlineUsers]);
 
   useEffect(() => {
     const getActiveRooms = async () => {
@@ -112,35 +104,34 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
             style={{ maxHeight: containerRef?.current?.offsetHeight || "100%" }}
           >
             <div className="flex flex-col">
-              {activeRooms?.map(
-                room =>
-                  room.otherUser._id !== user?._id && (
-                    <button
-                      className={`px-3 py-3 hover:bg-slate-300 ${
-                        selectedUserId === room.otherUser._id && "bg-slate-200"
-                      }`}
-                      key={room.otherUser._id}
-                      onClick={() =>
-                        setSearchParams({ id: room.otherUser._id })
-                      }
-                    >
-                      <div className="flex gap-1 justify-between">
-                        <Avatar
-                          user={room.otherUser}
-                          desc={room.lastMessage.text}
-                          onlineBadge={onlineUsers.find(
-                            ou => ou._id === room.otherUser._id
-                          )}
-                          withDetail
-                        />
+              {activeRooms?.map(room => {
+                const otherUser = room.users.find(u => u._id !== user._id);
 
-                        <div>
-                          <span className="text-xs">18:20 pm</span>
-                        </div>
+                return otherUser === user?._id ? null : (
+                  <button
+                    className={`px-3 py-3 hover:bg-slate-300 ${
+                      selectedUserId === otherUser._id && "bg-slate-200"
+                    }`}
+                    key={otherUser._id}
+                    onClick={() => setSearchParams({ id: otherUser._id })}
+                  >
+                    <div className="flex gap-1 justify-between">
+                      <Avatar
+                        user={otherUser}
+                        desc={room.lastMessage.text}
+                        onlineBadge={onlineUsers.find(
+                          ou => ou._id === otherUser._id
+                        )}
+                        withDetail
+                      />
+
+                      <div>
+                        <span className="text-xs">18:20 pm</span>
                       </div>
-                    </button>
-                  )
-              )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
