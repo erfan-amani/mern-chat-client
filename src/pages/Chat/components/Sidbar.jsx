@@ -16,13 +16,14 @@ const Sidbar = ({ onlineUsers = [], userMessages }) => {
 
   const selectedUserId = searchParams.get("id");
 
-  useEffect(() => {
-    const others = onlineUsers.filter(u => u._id !== user._id);
-    const defaultId = others?.[0]?._id;
+  // BUG: MAKE BUG IN JOIN ROOM IN BACKEND CODE
+  // useEffect(() => {
+  //   const others = onlineUsers.filter(u => u._id !== user._id);
+  //   const defaultId = others?.[0]?._id;
 
-    if (!!defaultId || !selectedUserId || selectedUserId === user?._id)
-      setSearchParams({ id: defaultId });
-  }, [onlineUsers]);
+  //   if (!!defaultId || !selectedUserId || selectedUserId === user?._id)
+  //     setSearchParams({ id: defaultId });
+  // }, [onlineUsers]);
 
   return (
     <div className="h-screen flex flex-col">
