@@ -32,7 +32,7 @@ const Chat = () => {
   return (
     <div className="flex w-screen h-screen">
       <div className="w-[250px] bg-indigo-50">
-        <Sidbar onlineUsers={onlineUsers} />
+        <Sidbar onlineUsers={onlineUsers} socket={socketRef.current} />
       </div>
 
       <div className="flex flex-col w-[calc(100%-250px)]">

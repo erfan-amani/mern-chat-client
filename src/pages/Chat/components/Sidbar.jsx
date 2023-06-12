@@ -30,6 +30,29 @@ const Sidbar = ({ onlineUsers = [], socket }) => {
     getActiveRooms();
   }, []);
 
+  useEffect(() => {
+    if (!isSocketConnected) return;
+
+    socket.on("activeRooms", data => {
+      const isSingle = data.length === undefined;
+
+      setActiveRooms(prev => {
+        if (isSingle) {
+          const newList = [...prev];
+          const index = newList.findIndex(r => r._id === data._id);
+          newList.splice(index, 1);
+          newList.unshift(data);
+
+          return newList;
+        } else {
+          return data;
+        }
+      });
+
+      console.log(data.length);
+    });
+  }, [isSocketConnected]);
+
   return (
     <div className="h-screen flex flex-col">
       <div className="border-b-2 border-white h-[66px]">
