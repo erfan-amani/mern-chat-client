@@ -42,7 +42,7 @@ const Messages = ({ socket, setRoom, room }) => {
       });
       const data = response.data || [];
 
-      setMessages(prev => [...data, ...prev]);
+      setMessages(data);
     };
 
     if (!!room._id) initializeMessages();
@@ -67,7 +67,7 @@ const Messages = ({ socket, setRoom, room }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-4 border-b-2 border-indigo-100 w-full">
+      <div className="p-3 border-b-2 border-indigo-100 w-full h-[66px]">
         <div className="flex items-center justify-between">
           <Avatar user={otherUser || {}} withDetail />
 
@@ -85,7 +85,7 @@ const Messages = ({ socket, setRoom, room }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 p-4">
+      <div className="flex flex-col gap-3 p-4 max-h-[calc(100vh-116px)] overflow-auto">
         {messages.map(message => (
           <Message key={message._id} message={message} />
         ))}
