@@ -22,11 +22,15 @@ const AppModal = forwardRef((props, ref) => {
     },
   }));
 
+  const close = () => {
+    setOpen(null);
+  };
+
   const closeModal = (e, reason) => {
     if (!disableBackDropClose) {
-      setOpen(null);
+      close(null);
     } else if (reason !== "backdropClick") {
-      setOpen(null);
+      close(null);
     }
   };
 
@@ -38,9 +42,9 @@ const AppModal = forwardRef((props, ref) => {
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+          // leave="ease-in duration-200"
+          // leaveFrom="opacity-100"
+          // leaveTo="opacity-0"
         >
           <div className="fixed inset-0 bg-black bg-opacity-25" />
         </Transition.Child>
@@ -53,30 +57,32 @@ const AppModal = forwardRef((props, ref) => {
               enterFrom="opacity-0 scale-95"
               enterTo="opacity-100 scale-100"
               leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
+              // leaveFrom="opacity-100 scale-100"
+              // leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all">
-                <div className="flex items-center justify-between px-4 pt-4 mb-2">
-                  <div>
-                    {title && (
-                      <Dialog.Title
-                        as="h3"
-                        className="text-lg font-medium leading-6 text-gray-900"
-                      >
-                        {title}
-                      </Dialog.Title>
+              <Dialog.Panel className="p-4 w-full max-w-md transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all">
+                {(!!title || !noCloseButton) && (
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      {title && (
+                        <Dialog.Title
+                          as="h3"
+                          className="text-lg font-medium leading-6 text-gray-900"
+                        >
+                          {title}
+                        </Dialog.Title>
+                      )}
+                    </div>
+
+                    {!noCloseButton && (
+                      <button onClick={() => close(null)}>
+                        <XMarkIcon className="w-6 h-6 text-neutral-800" />
+                      </button>
                     )}
                   </div>
+                )}
 
-                  {!noCloseButton && (
-                    <button onClick={() => setOpen(null)}>
-                      <XMarkIcon className="w-6 h-6 text-neutral-800" />
-                    </button>
-                  )}
-                </div>
-
-                <div className="px-4 pb-4">{open && open}</div>
+                <div className="">{open && open}</div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
