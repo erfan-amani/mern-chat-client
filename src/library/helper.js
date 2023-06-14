@@ -8,9 +8,11 @@ const colors = [
   "bg-cyan-500",
   "bg-rose-400",
   "bg-teal-500",
-  // "bg-fuchsia-400",
+  "bg-fuchsia-400",
 ];
 
-const getAvatarColor = id => colors[parseInt(id) % 10];
+const getAvatarColor = id => {
+  return colors[parseInt(id) % 10];
+};
 
 export { getAvatarColor };
