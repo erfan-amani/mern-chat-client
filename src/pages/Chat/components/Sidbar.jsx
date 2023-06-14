@@ -2,32 +2,49 @@ import {
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
   ChevronRightIcon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from "@/components/Avatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import Dropdown from "@/components/Dropdown";
+import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 
 const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
+  const dispatch = useDispatch();
   const [, setSearchParams] = useSearchParams();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
 
+  const logout = () => {
+    dispatch(logoutAsync());
+  };
+
   return (
     <div className="h-screen flex flex-col">
       <div className="border-b-2 border-white h-[66px]">
-        <div className="flex p-3">
+        <div className="flex items-center p-3">
           <div className="flex-1">
             <div className="flex gap-2">
               <Avatar user={user} withDetail />
             </div>
           </div>
 
-          <button>
-            <div className="p-1 rounded-full w-8 h-8">
-              <EllipsisVerticalIcon className="w-full h-full" />
-            </div>
-          </button>
+          <Dropdown
+            items={[
+              {
+                title: "Logout",
+                icon: ArrowLeftOnRectangleIcon,
+                onClick: logout,
+              },
+            ]}
+            headerComponent={() => (
+              <div className="p-1 rounded-full w-8 h-8">
+                <EllipsisVerticalIcon className="w-full h-full" />
+              </div>
+            )}
+          />
         </div>
       </div>
 
