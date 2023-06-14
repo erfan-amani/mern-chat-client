@@ -5,59 +5,13 @@ import {
 } from "@heroicons/react/24/outline";
 import Avatar from "@/components/Avatar";
 import { useSelector } from "react-redux";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
-import axios from "@/library/http";
 
-const Sidbar = ({ onlineUsers = [], socket }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [activeRooms, setActiveRooms] = useState();
+const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
+  const [, setSearchParams] = useSearchParams();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
-  const isSocketConnected = socket?.connected;
-
-  const selectedUserId = searchParams.get("id");
-
-  useEffect(() => {
-    const getActiveRooms = async () => {
-      const response = await axios.get("room/active");
-      const data = response.data;
-
-      setActiveRooms(data);
-    };
-
-    getActiveRooms();
-  }, []);
-
-  useEffect(() => {
-    if (!isSocketConnected) return;
-
-    socket.on("activeRooms", data => {
-      const isSingle = data.length === undefined;
-
-      setActiveRooms(prev => {
-        if (isSingle) {
-          const newList = [...prev];
-          const index = newList.findIndex(r => r._id === data._id);
-          newList.splice(index, 1);
-          newList.unshift(data);
-
-          return newList;
-        } else {
-          return data;
-        }
-      });
-
-      console.log(data.length);
-    });
-  }, [isSocketConnected]);
-
-  useEffect(() => {
-    if (!isSocketConnected) return;
-
-    socket.emit("joinAll");
-  }, [isSocketConnected]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -106,10 +60,7 @@ const Sidbar = ({ onlineUsers = [], socket }) => {
               {onlineUsers?.map(
                 u =>
                   u._id !== user?._id && (
-                    <button
-                      onClick={() => setSearchParams({ id: u._id })}
-                      key={u._id}
-                    >
+                    <button onClick={() => joinRoom(u._id)} key={u._id}>
                       <div className="flex flex-col gap-1 items-center justify-center">
                         <Avatar user={u} />
                         <p className="text-xs opacity-70">{u.username}</p>
@@ -133,16 +84,17 @@ const Sidbar = ({ onlineUsers = [], socket }) => {
             style={{ maxHeight: containerRef?.current?.offsetHeight || "100%" }}
           >
             <div className="flex flex-col">
-              {activeRooms?.map(room => {
+              {allRooms?.map(room => {
                 const otherUser = room.users.find(u => u._id !== user._id);
 
                 return otherUser === user?._id ? null : (
                   <button
                     className={`px-3 py-3 hover:bg-slate-300 ${
-                      selectedUserId === otherUser._id && "bg-slate-200"
+                      activeRoom?.users?.includes?.(otherUser._id) &&
+                      "bg-slate-200"
                     }`}
                     key={otherUser._id}
-                    onClick={() => setSearchParams({ id: otherUser._id })}
+                    onClick={() => setSearchParams({ room: room._id })}
                   >
                     <div className="flex gap-1 justify-between">
                       <Avatar

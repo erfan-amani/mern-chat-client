@@ -5,21 +5,22 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from "@/components/Avatar";
-import { useSearchParams } from "react-router-dom";
 import axios from "@/library/http";
 import Message from "./Message";
+import { useSelector } from "react-redux";
 
-const Messages = ({ socket, setRoom, room, onlineUsers }) => {
+const Messages = ({ socket, activeRoom, onlineUsers }) => {
+  const user = useSelector(state => state.auth.user);
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState({});
-  const [searchParams] = useSearchParams();
-  const otherUserId = searchParams.get("id");
   const isSocketConnected = socket?.connected;
 
   useEffect(() => {
+    const otherUser = activeRoom?.users?.find?.(u => u?._id !== user?._id);
+
     const getOtherUser = async () => {
       try {
-        const response = await axios.get(`user/${otherUserId}`);
+        const response = await axios.get(`user/${otherUser._id}`);
         const user = response.data;
 
         if (!!user._id) {
@@ -30,32 +31,23 @@ const Messages = ({ socket, setRoom, room, onlineUsers }) => {
       }
     };
 
-    if (!!otherUserId && otherUserId !== "undefined") {
+    if (!!otherUser._id) {
       getOtherUser();
     }
-  }, [otherUserId]);
+  }, [activeRoom]);
 
   useEffect(() => {
     const initializeMessages = async () => {
       const response = await axios.get("/message", {
-        params: { room: room._id },
+        params: { room: activeRoom._id },
       });
       const data = response.data || [];
 
       setMessages(data);
     };
 
-    if (!!room._id) initializeMessages();
-  }, [room]);
-
-  useEffect(() => {
-    if (!isSocketConnected || !otherUserId || otherUserId === "undefined")
-      return;
-
-    socket.emit("join", otherUserId, room => {
-      setRoom(room);
-    });
-  }, [otherUserId, isSocketConnected]);
+    if (!!activeRoom._id) initializeMessages();
+  }, [activeRoom._id]);
 
   useEffect(() => {
     if (!isSocketConnected) return;
