@@ -10,15 +10,30 @@ import { useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import Dropdown from "@/components/Dropdown";
 import { logoutAsync } from "@/store/reducers/auth/asyncActions";
+import UserModal from "./SearchModal/UserModal";
 
 const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
   const dispatch = useDispatch();
   const [, setSearchParams] = useSearchParams();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
+  const modal = useSelector(state => state.app.modal);
 
   const logout = () => {
     dispatch(logoutAsync());
+  };
+
+  const openModal = () => {
+    modal.show(
+      <UserModal
+        onlineUsers={onlineUsers}
+        joinRoom={joinRoom}
+        onClose={modal.hide}
+      />,
+      false,
+      null,
+      true
+    );
   };
 
   return (
@@ -66,7 +81,9 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
 
             <button>
               <div className="flex gap-[2px] items-center opacity-80">
-                <span className="text-xs">More</span>
+                <span className="text-xs" onClick={openModal}>
+                  More
+                </span>
                 <ChevronRightIcon className="w-4 h-4" />
               </div>
             </button>
