@@ -15,7 +15,8 @@ const Avatar = ({
         )}
         <div
           className={`flex items-center justify-center w-10 h-10 rounded-full text-white ${getAvatarColor(
-            user._id
+            user._id,
+            user.createdAt
           )}`}
         >
           {user.username?.[0]?.toUpperCase?.() || "U"}
