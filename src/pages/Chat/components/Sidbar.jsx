@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import Dropdown from "@/components/Dropdown";
 import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 import UserModal from "./SearchModal/UserModal";
+import GeneralSearchModal from "./SearchModal/GeneralSearchModal";
 
 const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
   const dispatch = useDispatch();
@@ -23,9 +24,22 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
     dispatch(logoutAsync());
   };
 
-  const openModal = () => {
+  const openUsersModal = () => {
     modal.show(
       <UserModal
+        onlineUsers={onlineUsers}
+        joinRoom={joinRoom}
+        onClose={modal.hide}
+      />,
+      false,
+      null,
+      true
+    );
+  };
+
+  const openGeneralSearchModal = () => {
+    modal.show(
+      <GeneralSearchModal
         onlineUsers={onlineUsers}
         joinRoom={joinRoom}
         onClose={modal.hide}
@@ -70,6 +84,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
           <input
             className="focus-visible:outline-none flex-1 bg-gray-50 text-xs"
             placeholder="Search"
+            onFocus={openGeneralSearchModal}
           />
         </div>
       </div>
@@ -81,7 +96,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
 
             <button>
               <div className="flex gap-[2px] items-center opacity-80">
-                <span className="text-xs" onClick={openModal}>
+                <span className="text-xs" onClick={openUsersModal}>
                   More
                 </span>
                 <ChevronRightIcon className="w-4 h-4" />
