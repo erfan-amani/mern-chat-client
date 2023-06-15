@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import useDebounce from "@/hooks/App/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 import axios from "@/library/http";
 import Avatar from "@/components/Avatar";
 import moment from "moment/moment";

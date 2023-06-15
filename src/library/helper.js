@@ -31,8 +31,6 @@ const colors = [
 const getAvatarColor = (...ids) => {
   const manyColors = [...colors, ...colors, ...colors, ...colors].slice(0, 99);
 
-  console.log(manyColors.length);
-
   let index = ids.reduce((prev, cur) => parseInt(cur) * parseInt(prev));
   index = (parseInt(index) % 100) - 1;
 
