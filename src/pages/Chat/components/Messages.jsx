@@ -55,6 +55,13 @@ const Messages = ({ socket, activeRoom, onlineUsers }) => {
       const data = response.data || [];
 
       setMessages(data);
+
+      setTimeout(() => {
+        containerRef?.current?.scrollTo?.(
+          0,
+          containerRef?.current?.scrollHeight
+        );
+      });
     };
 
     if (!!activeRoom._id) initializeMessages();
