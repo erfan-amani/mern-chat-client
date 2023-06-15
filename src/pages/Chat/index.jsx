@@ -37,7 +37,7 @@ const Chat = () => {
     if (!!activeRoomId && activeRoomId !== "undefined" && !!allRooms.length) {
       const room = allRooms.find(r => r._id === activeRoomId);
 
-      !!room._id && setActiveRoom(room);
+      !!room?._id && setActiveRoom(room);
     }
   }, [activeRoomId, allRooms]);
 
@@ -67,8 +67,11 @@ const Chat = () => {
         setAllRooms(prev => {
           const newList = [...prev];
           const index = newList.findIndex(r => r._id === data._id);
-          newList.splice(index, 1);
-          newList.unshift(data);
+
+          if (index !== -1) {
+            newList.splice(index, 1);
+            newList.unshift(data);
+          }
 
           return newList;
         });
