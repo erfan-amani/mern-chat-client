@@ -19,14 +19,10 @@ const Messages = ({ socket, activeRoom, onlineUsers }) => {
   const isSocketConnected = socket?.connected;
 
   const readMessage = messageId => {
-    socket.emit("read", messageId, updatedMessage => {
-      setMessages(prev => {
-        const newList = [...prev];
-        const index = newList.findIndex(m => m._id === updatedMessage._id);
-        newList[index] = updatedMessage;
-
-        return newList;
-      });
+    socket.emit("read", messageId, error => {
+      if (error) {
+        console.log(error);
+      }
     });
   };
 
@@ -69,6 +65,16 @@ const Messages = ({ socket, activeRoom, onlineUsers }) => {
 
     socket.on("message", message => {
       if (!!message) setMessages(prev => [...prev, message]);
+    });
+
+    socket.on("updateMessage", updatedMessage => {
+      setMessages(prev => {
+        const newList = [...prev];
+        const index = newList.findIndex(m => m._id === updatedMessage._id);
+        newList[index] = updatedMessage;
+
+        return newList;
+      });
     });
   }, [isSocketConnected]);
 
