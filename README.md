@@ -1,13 +1,14 @@
-# react-boilerplate
-Simple boilerplate for front app with react js
+# Mern chat client
+Realtime chat application with jwt authentication<br />
 
-Technologies used in this boilerplate are:
+Technologies used in this repo are:
 * ReactJS
 * Redux
 * React router dom
 * TailwindCSS
 * i18next
 * Axios + React query
+* Socket.io-client
 
 Code powered by vite
 
