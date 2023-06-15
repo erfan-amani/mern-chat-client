@@ -8,12 +8,27 @@ import Avatar from "@/components/Avatar";
 import axios from "@/library/http";
 import Message from "./Message";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
 
 const Messages = ({ socket, activeRoom, onlineUsers }) => {
+  const containerRef = useRef();
+  const lastMessageRef = useRef();
   const user = useSelector(state => state.auth.user);
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState({});
   const isSocketConnected = socket?.connected;
+
+  const readMessage = messageId => {
+    socket.emit("read", messageId, updatedMessage => {
+      setMessages(prev => {
+        const newList = [...prev];
+        const index = newList.findIndex(m => m._id === updatedMessage._id);
+        newList[index] = updatedMessage;
+
+        return newList;
+      });
+    });
+  };
 
   useEffect(() => {
     const otherUser = activeRoom?.users?.find?.(u => u?._id !== user?._id);
@@ -57,6 +72,24 @@ const Messages = ({ socket, activeRoom, onlineUsers }) => {
     });
   }, [isSocketConnected]);
 
+  useEffect(() => {
+    const containerEl = containerRef.current;
+    const lastMessageEl = lastMessageRef.current;
+
+    if (!containerEl || !lastMessageEl) return;
+
+    const lastMessageHeight =
+      lastMessageEl.offsetHeight +
+      parseFloat(getComputedStyle(lastMessageEl).marginBottom);
+
+    if (
+      containerEl.scrollHeight - lastMessageHeight <=
+      containerEl.scrollTop + containerEl.offsetHeight
+    ) {
+      containerEl.scrollTo(0, containerEl.scrollHeight);
+    }
+  }, [messages]);
+
   return (
     <div className="flex flex-col h-full">
       <div className="p-3 border-b-2 border-indigo-100 w-full h-[66px]">
@@ -81,9 +114,19 @@ const Messages = ({ socket, activeRoom, onlineUsers }) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 p-4 max-h-[calc(100vh-116px)] overflow-auto">
-        {messages.map(message => (
-          <Message key={message._id} message={message} />
+      <div
+        className="flex flex-col [&>div]:mb-3 p-4 max-h-[calc(100vh-116px)] overflow-auto"
+        ref={containerRef}
+      >
+        {messages.map((message, index) => (
+          <Message
+            key={message._id}
+            message={message}
+            readMessage={readMessage}
+            lastMessageRef={
+              messages.length === index + 1 ? lastMessageRef : null
+            }
+          />
         ))}
       </div>
     </div>

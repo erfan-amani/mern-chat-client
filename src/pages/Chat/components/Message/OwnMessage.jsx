@@ -1,9 +1,8 @@
-import React from "react";
 import moment from "moment";
 
-const OwnMessage = ({ message }) => {
+const OwnMessage = ({ message, lastMessageRef }) => {
   return (
-    <div className="w-fit">
+    <div className="w-fit" ref={lastMessageRef}>
       <div className="flex flex-col gap-1 py-[6px] pr-2 pl-4 bg-slate-200 rounded-xl rounded-tl-none min-w-[100px]">
         <div>
           <p className="text-sm">{message.text}</p>
