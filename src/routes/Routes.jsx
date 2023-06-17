@@ -1,9 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import renderPrivateRoutes from "./PrivateRoutes";
-import renderPublicRoutes from "./PublicRoutes";
-import renderAuthRoutes from "./AuthRoutes";
 import { useSelector } from "react-redux";
+import { AuthRoute, PrivateRoute } from "./CustomRouter";
+import Chat from "@/pages/Chat";
+import Request from "@/pages/Chat/components/Request";
+import Auth from "@/pages/Auth/Auth";
+import Login from "@/pages/Auth/Login";
+import Register from "@/pages/Auth/Register";
+import SendMessage from "../pages/Chat/components/SendMessage";
 
 const AppRoutes = ({ children }) => {
   const isAuthorized = useSelector(state => !!state.auth.user);
@@ -13,17 +17,34 @@ const AppRoutes = ({ children }) => {
       <Routes>
         {children}
 
-        {/* <Routes>
-        <Route path="*" element={<Navbar />} />
-      </Routes> */}
+        <Route
+          path="/auth"
+          element={
+            <AuthRoute>
+              <Auth />
+            </AuthRoute>
+          }
+        >
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </Route>
 
-        {renderPublicRoutes()}
-        {renderAuthRoutes()}
-        {renderPrivateRoutes()}
+        <Route
+          path="/chat"
+          element={
+            <PrivateRoute>
+              <Chat />
+            </PrivateRoute>
+          }
+        >
+          <Route path="request" element={<Request />} />
+          <Route path="room" element={<div>index2</div>}>
+            <Route path="user" element={<Request />} />
+            <Route path="channel" element={<Request />} />
+          </Route>
 
-        {/* <Routes>
-        <Route path="*" element={<Footer />} />
-      </Routes> */}
+          <Route path="*" element={<SendMessage />} />
+        </Route>
 
         <Route
           path="*"
