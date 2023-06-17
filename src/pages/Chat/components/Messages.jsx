@@ -9,8 +9,10 @@ import axios from "@/library/http";
 import Message from "./Message";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
+import { useOutletContext } from "react-router-dom";
 
-const Messages = ({ socket, activeRoom, onlineUsers }) => {
+const Messages = () => {
+  const { socket, activeRoom, onlineUsers } = useOutletContext();
   const containerRef = useRef();
   const lastMessageRef = useRef();
   const user = useSelector(state => state.auth.user);

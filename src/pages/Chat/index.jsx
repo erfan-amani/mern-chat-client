@@ -1,35 +1,28 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import Messages from "./components/Messages";
 import SendMessage from "./components/SendMessage";
 import Sidbar from "./components/Sidbar";
 import { io } from "socket.io-client";
 import { BASE_URL } from "@/library/config";
-import { useSearchParams } from "react-router-dom";
+import { Outlet, useSearchParams } from "react-router-dom";
 
 const Chat = () => {
   const socketRef = useRef();
   const { accessToken: token, user } = useSelector(state => state.auth);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [allRooms, setAllRooms] = useState([]);
   const [activeRoom, setActiveRoom] = useState({});
   const activeRoomId = searchParams.get("room");
 
-  const joinRoom = otherUserId => {
-    const room = allRooms.find(
-      ({ users = [] }) =>
-        users.includes(otherUserId) && users.includes(user._id)
-    );
-
-    if (!room) {
-      socketRef.current.emit("join", { otherUserId }, createdRoom => {
-        setActiveRoom(createdRoom);
-        setSearchParams({ room: createdRoom._id });
-      });
+  const joinRoom = ({ otherUserId, roomId }) => {
+    if (roomId) {
+      const room = allRooms.find(r => r._id == roomId);
+      !!room._id && setActiveRoom(room);
     } else {
-      setActiveRoom(room);
-      setSearchParams({ room: room._id });
+      socketRef.current.emit("join_room", { otherUserId, roomId }, room => {
+        !!room && setActiveRoom(room);
+      });
     }
   };
 
@@ -80,10 +73,12 @@ const Chat = () => {
       } else {
         setAllRooms(data);
 
-        const newActive = data.find(r => r._id === activeRoomId);
-        setActiveRoom(newActive);
+        // const newActive = data.find(r => r._id === activeRoomId);
+        // setActiveRoom(newActive);
       }
     });
+
+    socket.on("accept_contact", data => {});
 
     socket.on("connect_error", err => {
       console.log(err.message);
@@ -101,28 +96,20 @@ const Chat = () => {
         />
       </div>
 
-      {!activeRoom?._id ? (
-        <div className="text-center self-center justify-self-center  w-[calc(90%-250px)] mx-auto">
-          <p>
-            No room selected! Please select a chat from sidebar to start
-            chating.
-          </p>
+      <div className="flex flex-col w-[calc(100%-250px)]">
+        <div className="h-[calc(100%-50px)]">
+          <Outlet
+            context={{
+              socket: socketRef.current,
+              allRooms,
+              activeRoom,
+              onlineUsers,
+            }}
+          />
         </div>
-      ) : (
-        <div className="flex flex-col w-[calc(100%-250px)]">
-          <div className="h-[calc(100%-50px)]">
-            <Messages
-              activeRoom={activeRoom}
-              socket={socketRef.current}
-              onlineUsers={onlineUsers}
-            />
-          </div>
 
-          <div className="h-[50px] p-4 border-t-2 border-indigo-100">
-            <SendMessage activeRoom={activeRoom} socket={socketRef.current} />
-          </div>
-        </div>
-      )}
+        <SendMessage activeRoom={activeRoom} socket={socketRef.current} />
+      </div>
     </div>
   );
 };

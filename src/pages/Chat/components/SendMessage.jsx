@@ -18,7 +18,7 @@ const SendMessage = ({ socket, activeRoom }) => {
   };
 
   return (
-    <div>
+    <div className="h-[50px] p-4 border-t-2 border-indigo-100">
       <div className="flex gap-4 items-center">
         <button>
           <PaperClipIcon className="w-5 h-5" />

@@ -7,7 +7,6 @@ import {
 import Avatar from "@/components/Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { useRef } from "react";
-import { useSearchParams } from "react-router-dom";
 import Dropdown from "@/components/Dropdown";
 import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 import UserModal from "./SearchModal/UserModal";
@@ -15,7 +14,6 @@ import GeneralSearchModal from "./SearchModal/GeneralSearchModal";
 
 const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
   const dispatch = useDispatch();
-  const [, setSearchParams] = useSearchParams();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
   const modal = useSelector(state => state.app.modal);
@@ -49,6 +47,11 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
       true
     );
   };
+
+  const onRoomClick = () => {
+    joinRoom({ otherUserId: otherUser._id, roomId: room._id });
+  };
+  const onOnlineUserClick = () => {};
 
   return (
     <div className="h-screen flex flex-col">
@@ -109,7 +112,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
               {onlineUsers?.map(
                 u =>
                   u._id !== user?._id && (
-                    <button onClick={() => joinRoom(u._id)} key={u._id}>
+                    <button onClick={onOnlineUserClick} key={u._id}>
                       <div className="flex flex-col gap-1 items-center justify-center">
                         <Avatar user={u} />
                         <p className="text-xs opacity-70">{u.username}</p>
@@ -143,7 +146,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
                       "bg-slate-200"
                     }`}
                     key={otherUser._id}
-                    onClick={() => setSearchParams({ room: room._id })}
+                    onClick={onRoomClick}
                   >
                     <div className="flex gap-1 justify-between">
                       <Avatar
