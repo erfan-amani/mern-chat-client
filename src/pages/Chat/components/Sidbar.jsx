@@ -11,8 +11,10 @@ import Dropdown from "@/components/Dropdown";
 import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 import UserModal from "./SearchModal/UserModal";
 import GeneralSearchModal from "./SearchModal/GeneralSearchModal";
+import { useNavigate } from "react-router-dom";
 
 const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
@@ -48,13 +50,15 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
     );
   };
 
-  const onRoomClick = () => {
-    joinRoom({ otherUserId: otherUser._id, roomId: room._id });
+  const onRoomClick = (otherUserId, roomId) => {
+    joinRoom({ otherUserId, roomId });
   };
-  const onOnlineUserClick = () => {};
+  const onOnlineUserClick = userId => {
+    navigate(`/chat/request/${userId}`);
+  };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col">
       <div className="border-b-2 border-white h-[66px]">
         <div className="flex items-center p-3">
           <div className="flex-1">
@@ -112,7 +116,10 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
               {onlineUsers?.map(
                 u =>
                   u._id !== user?._id && (
-                    <button onClick={onOnlineUserClick} key={u._id}>
+                    <button
+                      onClick={() => onOnlineUserClick(u._id)}
+                      key={u._id}
+                    >
                       <div className="flex flex-col gap-1 items-center justify-center">
                         <Avatar user={u} />
                         <p className="text-xs opacity-70">{u.username}</p>
@@ -146,7 +153,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
                       "bg-slate-200"
                     }`}
                     key={otherUser._id}
-                    onClick={onRoomClick}
+                    onClick={() => onRoomClick(otherUser._id, room._id)}
                   >
                     <div className="flex gap-1 justify-between">
                       <Avatar

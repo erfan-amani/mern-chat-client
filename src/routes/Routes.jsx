@@ -37,7 +37,7 @@ const AppRoutes = ({ children }) => {
             </PrivateRoute>
           }
         >
-          <Route path="request" element={<Request />} />
+          <Route path="request/:userId" element={<Request />} />
           <Route path="room" element={<div>index2</div>}>
             <Route path="user" element={<Request />} />
             <Route path="channel" element={<Request />} />

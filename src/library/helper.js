@@ -41,4 +41,9 @@ const getAvatarColor = (...ids) => {
   return manyColors[index];
 };
 
-export { getAvatarColor };
+const isOnline = (all, user) => {
+  const find = all.map(u => u._id === user._id);
+  return !!find;
+};
+
+export { getAvatarColor, isOnline };

@@ -4,26 +4,24 @@ import SendMessage from "./components/SendMessage";
 import Sidbar from "./components/Sidbar";
 import { io } from "socket.io-client";
 import { BASE_URL } from "@/library/config";
-import { Outlet, useSearchParams } from "react-router-dom";
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
+import NavSide from "./components/NavSide";
 
 const Chat = () => {
   const socketRef = useRef();
-  const { accessToken: token, user } = useSelector(state => state.auth);
+  const { accessToken: token } = useSelector(state => state.auth);
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [allRooms, setAllRooms] = useState([]);
   const [activeRoom, setActiveRoom] = useState({});
   const activeRoomId = searchParams.get("room");
 
-  const joinRoom = ({ otherUserId, roomId }) => {
-    if (roomId) {
-      const room = allRooms.find(r => r._id == roomId);
-      !!room._id && setActiveRoom(room);
-    } else {
-      socketRef.current.emit("join_room", { otherUserId, roomId }, room => {
-        !!room && setActiveRoom(room);
-      });
-    }
+  const joinRoom = roomId => {
+    if (!roomId) return;
+
+    const room = allRooms.find(r => r._id == roomId);
+    !!room._id && setActiveRoom(room);
   };
 
   useEffect(() => {
@@ -85,21 +83,40 @@ const Chat = () => {
     });
   }, [token]);
 
+  useEffect(() => {
+    if (activeRoom._id) {
+      navigate(
+        activeRoom?.pending
+          ? `/request/${activeRoom._id}`
+          : `/room/${activeRoom._id}`
+      );
+    }
+  }, [activeRoom._id]);
+
   return (
     <div className="flex w-screen h-screen">
-      <div className="w-[250px] bg-indigo-50">
-        <Sidbar
-          onlineUsers={onlineUsers}
-          allRooms={allRooms}
-          activeRoom={activeRoom}
-          joinRoom={joinRoom}
-        />
+      <div className="w-[300px] bg-indigo-50">
+        <div className="flex">
+          <div className="w-[50px] border-2 border-white">
+            <NavSide />
+          </div>
+
+          <div className="h-screen flex-1">
+            <Sidbar
+              onlineUsers={onlineUsers}
+              allRooms={allRooms}
+              activeRoom={activeRoom}
+              joinRoom={joinRoom}
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="flex flex-col w-[calc(100%-250px)]">
+      <div className="flex flex-col w-[calc(100%-300px)]">
         <div className="h-[calc(100%-50px)]">
           <Outlet
             context={{
+              setActiveRoom: setActiveRoom,
               socket: socketRef.current,
               allRooms,
               activeRoom,
