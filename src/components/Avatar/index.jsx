@@ -19,12 +19,16 @@ const Avatar = ({
           />
         )}
         <div
-          className={`flex items-center justify-center  w-${
-            big ? "20" : "10"
-          } h-${big ? "20" : "10"} rounded-full text-white ${getAvatarColor(
-            user._id,
-            user.createdAt
-          )}`}
+          className={`flex items-center justify-center
+            rounded-full text-white ${getAvatarColor(
+              user._id,
+              user.createdAt
+            )}`}
+          style={
+            big
+              ? { width: "80px", height: "80px" }
+              : { width: "40px", height: "40px" }
+          }
         >
           {user.username?.[0]?.toUpperCase?.() || "U"}
         </div>
