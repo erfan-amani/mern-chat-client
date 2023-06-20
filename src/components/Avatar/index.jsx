@@ -13,9 +13,12 @@ const Avatar = ({
       <div className="relative">
         {onlineBadge && (
           <div
-            className={`absolute w-${big ? "4" : "3"} h-${
-              big ? "4" : "3"
-            } rounded-full bg-green-400 border border-white bottom-0 right-0`}
+            className={`absolute rounded-full bg-green-400 border border-white bottom-0 right-0`}
+            style={
+              big
+                ? { width: "16px", height: "16px" }
+                : { width: "12px", height: "12px" }
+            }
           />
         )}
         <div
