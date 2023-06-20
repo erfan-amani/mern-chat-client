@@ -26,7 +26,7 @@ const Chat = () => {
       socket.emit("join", { roomId });
     });
 
-    socket.on("onlineUsers", users => {
+    socket.on("online_users", users => {
       setOnlineUsers(users);
     });
 

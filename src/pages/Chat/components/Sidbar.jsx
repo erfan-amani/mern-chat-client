@@ -48,7 +48,7 @@ const Sidbar = ({ socket, onlineUsers = [] }) => {
   useEffect(() => {
     if (!socket?.connected) return;
 
-    socket.on("activeRooms", data => {
+    socket.on("active_rooms", data => {
       const isSingle = data.length === undefined;
 
       if (isSingle) {
