@@ -22,6 +22,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
   const user = useSelector(state => state.auth.user);
   const modal = useSelector(state => state.app.modal);
   const [rooms, setRooms] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState({});
   const { roomId } = useParams();
   const isSocketConnected = socket?.connected;
 
@@ -64,18 +65,23 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
   useEffect(() => {
     if (!isSocketConnected) return;
 
-    socket.on("room_update", data => {
+    socket.on("room_update", room => {
       setRooms(prev => {
         const newList = [...prev];
-        const index = newList.findIndex(r => r._id === data._id);
+        const index = newList.findIndex(r => r._id === room._id);
 
         if (index !== -1) {
           newList.splice(index, 1);
-          newList.unshift(data);
+          newList.unshift(room);
         }
 
         return newList;
       });
+
+      setUnreadMessages(prev => ({
+        ...prev,
+        [room._id]: (prev[room._id] || 0) + 1,
+      }));
     });
   }, [isSocketConnected]);
 
@@ -170,6 +176,9 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
 
                 return otherUser === user?._id ? null : (
                   <Link
+                    onClick={() =>
+                      setUnreadMessages(prev => ({ ...prev, [room._id]: 0 }))
+                    }
                     to={`/chat/message/${room._id}`}
                     className={`px-3 py-3 hover:bg-slate-300 ${
                       roomId === room._id && "bg-slate-200"
@@ -184,8 +193,14 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
                         withDetail
                       />
 
-                      <div>
+                      <div className="flex flex-col gap-1 justify-between items-end">
                         <span className="text-xs">18:20 pm</span>
+
+                        {roomId !== room._id && !!unreadMessages[room._id] && (
+                          <div className="p-1 min-w-[24px] text-center w-fit h-fit rounded-full bg-indigo-400 text-white text-xs">
+                            {unreadMessages[room._id]}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </Link>
