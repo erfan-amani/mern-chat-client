@@ -11,7 +11,7 @@ const Request = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const sendRequest = () => {
+  const sendContactRequest = () => {
     setLoading(true);
 
     socket.emit("contact_request", otherUserId, room => {
@@ -51,7 +51,7 @@ const Request = () => {
 
           <button
             disabled={loading}
-            onClick={sendRequest}
+            onClick={sendContactRequest}
             className={`mt-4 ${
               loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-500"
             } text-white px-6 py-2 rounded-md`}

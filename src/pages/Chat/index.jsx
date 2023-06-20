@@ -15,6 +15,8 @@ const Chat = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [allRooms, setAllRooms] = useState([]);
   const [activeRoom, setActiveRoom] = useState({});
+  const [sentRequests, setsentRequestss] = useState({});
+  const [receivedRequests, setReceivedRequests] = useState({});
   const activeRoomId = searchParams.get("room");
 
   const joinRoom = roomId => {
@@ -78,6 +80,14 @@ const Chat = () => {
 
     socket.on("accept_contact", data => {});
 
+    socket.on("sent_requests", data => {
+      setsentRequestss(data);
+    });
+
+    socket.on("receivd_requests", data => {
+      setReceivedRequests(data);
+    });
+
     socket.on("connect_error", err => {
       console.log(err.message);
     });
@@ -98,7 +108,10 @@ const Chat = () => {
       <div className="w-[300px] bg-indigo-50">
         <div className="flex">
           <div className="w-[50px] border-2 border-white">
-            <NavSide />
+            <NavSide
+              sentRequests={sentRequests}
+              receivedRequests={receivedRequests}
+            />
           </div>
 
           <div className="h-screen flex-1">

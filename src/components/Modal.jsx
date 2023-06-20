@@ -10,8 +10,6 @@ const AppModal = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, (...rest) => ({
     show(component, disableBackDropClose, title, noClose) {
-      console.log("here");
-
       setTitle(title);
       setOpen(component);
       setDisableBackdropClose(disableBackDropClose);

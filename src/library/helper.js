@@ -46,4 +46,9 @@ const isOnline = (all, user) => {
   return !!find;
 };
 
-export { getAvatarColor, isOnline };
+const getOtherUser = (allUsers, myUser) => {
+  const find = allUsers.find(u => u._id !== myUser._id);
+  return find;
+};
+
+export { getAvatarColor, isOnline, getOtherUser };
