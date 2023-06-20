@@ -8,7 +8,7 @@ import Auth from "@/pages/Auth/Auth";
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";
 import SendMessage from "../pages/Chat/components/SendMessage";
-import Message from "../pages/Chat/components/Message";
+import Messages from "../pages/Chat/components/Messages";
 
 const AppRoutes = ({ children }) => {
   const isAuthorized = useSelector(state => !!state.auth.user);
@@ -39,14 +39,13 @@ const AppRoutes = ({ children }) => {
           }
         >
           <Route path="user/:userId" element={<UserProfile />} />
-          <Route path="message/:roomId" element={<Message />} />
+
+          <Route path="message/:roomId" element={<Messages />} />
 
           <Route path="room" element={<div>index2</div>}>
             <Route path="user" element={<UserProfile />} />
             <Route path="channel" element={<UserProfile />} />
           </Route>
-
-          <Route path="*" element={<SendMessage />} />
         </Route>
 
         <Route

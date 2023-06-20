@@ -1,6 +1,10 @@
 import { PaperClipIcon, MicrophoneIcon } from "@heroicons/react/24/outline";
+import { useOutletContext, useParams } from "react-router-dom";
 
-const SendMessage = ({ socket, activeRoom }) => {
+const SendMessage = () => {
+  const { socket } = useOutletContext();
+  const { roomId } = useParams();
+
   const onSubmit = event => {
     event.preventDefault();
 
@@ -14,7 +18,7 @@ const SendMessage = ({ socket, activeRoom }) => {
     inputEl.focus();
 
     // send message
-    socket.emit("sendMessage", { text, room: activeRoom._id });
+    socket.emit("sendMessage", { text, room: roomId });
   };
 
   return (

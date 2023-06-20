@@ -7,17 +7,17 @@ import {
 import Avatar from "@/components/Avatar";
 import axios from "@/library/http";
 import Message from "./Message";
-import { useSelector } from "react-redux";
 import { useRef } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
+import SendMessage from "./SendMessage";
 
 const Messages = () => {
-  const { socket, activeRoom, onlineUsers } = useOutletContext();
+  const { socket, onlineUsers } = useOutletContext();
   const containerRef = useRef();
   const lastMessageRef = useRef();
-  const user = useSelector(state => state.auth.user);
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState({});
+  const { roomId } = useParams();
   const isSocketConnected = socket?.connected;
 
   const readMessage = messageId => {
@@ -29,30 +29,26 @@ const Messages = () => {
   };
 
   useEffect(() => {
-    const otherUser = activeRoom?.users?.find?.(u => u?._id !== user?._id);
-
     const getOtherUser = async () => {
       try {
-        const response = await axios.get(`user/${otherUser._id}`);
+        const response = await axios.get("room/users", {
+          params: { id: roomId },
+        });
         const user = response.data;
 
-        if (!!user._id) {
-          setOtherUser(user);
-        }
+        setOtherUser(response.data?.[0]);
       } catch (err) {
         console.log(err);
       }
     };
 
-    if (!!otherUser._id) {
-      getOtherUser();
-    }
-  }, [activeRoom]);
+    getOtherUser();
+  }, []);
 
   useEffect(() => {
     const initializeMessages = async () => {
       const response = await axios.get("/message", {
-        params: { room: activeRoom._id },
+        params: { room: roomId },
       });
       const data = response.data || [];
 
@@ -66,8 +62,8 @@ const Messages = () => {
       });
     };
 
-    if (!!activeRoom._id) initializeMessages();
-  }, [activeRoom._id]);
+    if (!!roomId) initializeMessages();
+  }, [roomId]);
 
   useEffect(() => {
     if (!isSocketConnected) return;
@@ -106,43 +102,49 @@ const Messages = () => {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-3 border-b-2 border-indigo-100 w-full h-[66px]">
-        <div className="flex items-center justify-between">
-          <Avatar
-            user={otherUser || {}}
-            onlineBadge={onlineUsers.find(ou => ou._id === otherUser._id)}
-            withDetail
-          />
+    <div className="flex flex-col w-[calc(100%-300px)]">
+      <div className="h-[calc(100%-50px)]">
+        <div className="flex flex-col h-full">
+          <div className="p-3 border-b-2 border-indigo-100 w-full h-[66px]">
+            <div className="flex items-center justify-between">
+              <Avatar
+                user={otherUser || {}}
+                onlineBadge={onlineUsers.find(ou => ou._id === otherUser._id)}
+                withDetail
+              />
 
-          <div className="flex gap-5 items-center">
-            <button>
-              <PhoneIcon className="w-5 h-5" />
-            </button>
-            <button>
-              <VideoCameraIcon className="w-5 h-5" />
-            </button>
-            <button>
-              <EllipsisVerticalIcon className="w-5 h-5" />
-            </button>
+              <div className="flex gap-5 items-center">
+                <button>
+                  <PhoneIcon className="w-5 h-5" />
+                </button>
+                <button>
+                  <VideoCameraIcon className="w-5 h-5" />
+                </button>
+                <button>
+                  <EllipsisVerticalIcon className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="flex flex-col [&>div]:mb-3 p-4 max-h-[calc(100vh-116px)] overflow-auto"
+            ref={containerRef}
+          >
+            {messages.map((message, index) => (
+              <Message
+                key={message._id}
+                message={message}
+                readMessage={readMessage}
+                lastMessageRef={
+                  messages.length === index + 1 ? lastMessageRef : null
+                }
+              />
+            ))}
           </div>
         </div>
-      </div>
 
-      <div
-        className="flex flex-col [&>div]:mb-3 p-4 max-h-[calc(100vh-116px)] overflow-auto"
-        ref={containerRef}
-      >
-        {messages.map((message, index) => (
-          <Message
-            key={message._id}
-            message={message}
-            readMessage={readMessage}
-            lastMessageRef={
-              messages.length === index + 1 ? lastMessageRef : null
-            }
-          />
-        ))}
+        <SendMessage />
       </div>
     </div>
   );

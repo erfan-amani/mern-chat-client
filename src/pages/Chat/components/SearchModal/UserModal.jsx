@@ -5,8 +5,10 @@ import axios from "@/library/http";
 import Avatar from "@/components/Avatar";
 import moment from "moment/moment";
 import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-const UserModal = ({ onlineUsers = [], joinRoom, onClose }) => {
+const UserModal = ({ onlineUsers = [], onClose }) => {
+  const navigate = Navigate();
   const myUser = useSelector(state => state.auth.user);
   const [users, setUsers] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -61,7 +63,7 @@ const UserModal = ({ onlineUsers = [], joinRoom, onClose }) => {
                 key={u._id}
                 onClick={() => {
                   onClose();
-                  joinRoom(u._id);
+                  navigate(`/room/user/${u._id}`);
                 }}
               >
                 <div className="flex items-center gap-2">

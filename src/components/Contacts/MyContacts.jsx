@@ -20,8 +20,6 @@ const MyContacts = ({ socket }) => {
     getContacts();
   }, []);
 
-  console.log(list);
-
   if (!list.length) {
     return <div className="text-center">No contact!</div>;
   }

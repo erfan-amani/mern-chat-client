@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Contacts from "@/components/Contacts";
 
-const NavSide = ({ sentRequests = [], receivedRequests = [], socket }) => {
+const NavSide = ({ socket }) => {
   const modal = useSelector(state => state.app.modal);
   const dispatch = useDispatch();
 
@@ -24,12 +24,7 @@ const NavSide = ({ sentRequests = [], receivedRequests = [], socket }) => {
 
   const openContacts = () => {
     modal.show(
-      <Contacts
-        sentRequests={sentRequests}
-        receivedRequests={receivedRequests}
-        onClose={modal.hide}
-        socket={socket}
-      />,
+      <Contacts onClose={modal.hide} socket={socket} />,
       false,
       "Contacts Management"
     );

@@ -5,8 +5,10 @@ import axios from "@/library/http";
 import Avatar from "@/components/Avatar";
 import moment from "moment/moment";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const GeneralSearchModal = ({ onlineUsers = [], joinRoom, onClose }) => {
+const GeneralSearchModal = ({ onlineUsers = [], onClose }) => {
+  const navigate = useNavigate();
   const myUser = useSelector(state => state.auth.user);
   const [users, setUsers] = useState([]);
   const [rooms, setRooms] = useState([]);
@@ -59,7 +61,6 @@ const GeneralSearchModal = ({ onlineUsers = [], joinRoom, onClose }) => {
                 key={u._id}
                 onClick={() => {
                   onClose();
-                  joinRoom(u._id);
                 }}
               >
                 <div className="flex items-center gap-2">
@@ -94,7 +95,7 @@ const GeneralSearchModal = ({ onlineUsers = [], joinRoom, onClose }) => {
                 key={r._id}
                 onClick={() => {
                   onClose();
-                  joinRoom(u._id);
+                  navigate(`/chat/room/${r._id}`);
                 }}
               >
                 <div className="flex items-center gap-2">

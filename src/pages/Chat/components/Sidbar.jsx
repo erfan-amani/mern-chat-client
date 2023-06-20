@@ -11,14 +11,17 @@ import Dropdown from "@/components/Dropdown";
 import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 import UserModal from "./SearchModal/UserModal";
 import GeneralSearchModal from "./SearchModal/GeneralSearchModal";
-import { useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 
-const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
-  const navigate = useNavigate();
+const Sidbar = ({ socket, onlineUsers = [] }) => {
   const dispatch = useDispatch();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
   const modal = useSelector(state => state.app.modal);
+  const [rooms, setRooms] = useState([]);
+  const { roomId } = useParams();
 
   const logout = () => {
     dispatch(logoutAsync());
@@ -26,11 +29,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
 
   const openUsersModal = () => {
     modal.show(
-      <UserModal
-        onlineUsers={onlineUsers}
-        joinRoom={joinRoom}
-        onClose={modal.hide}
-      />,
+      <UserModal onlineUsers={onlineUsers} onClose={modal.hide} />,
       false,
       null,
       true
@@ -39,23 +38,36 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
 
   const openGeneralSearchModal = () => {
     modal.show(
-      <GeneralSearchModal
-        onlineUsers={onlineUsers}
-        joinRoom={joinRoom}
-        onClose={modal.hide}
-      />,
+      <GeneralSearchModal onlineUsers={onlineUsers} onClose={modal.hide} />,
       false,
       null,
       true
     );
   };
 
-  const onRoomClick = (otherUserId, roomId) => {
-    joinRoom({ otherUserId, roomId });
-  };
-  const onOnlineUserClick = userId => {
-    navigate(`/chat/user/${userId}`);
-  };
+  useEffect(() => {
+    if (!socket?.connected) return;
+
+    socket.on("activeRooms", data => {
+      const isSingle = data.length === undefined;
+
+      if (isSingle) {
+        setRooms(prev => {
+          const newList = [...prev];
+          const index = newList.findIndex(r => r._id === data._id);
+
+          if (index !== -1) {
+            newList.splice(index, 1);
+            newList.unshift(data);
+          }
+
+          return newList;
+        });
+      } else {
+        setRooms(data);
+      }
+    });
+  }, [socket?.connected]);
 
   return (
     <div className="flex flex-col">
@@ -116,15 +128,12 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
               {onlineUsers?.map(
                 u =>
                   u._id !== user?._id && (
-                    <button
-                      onClick={() => onOnlineUserClick(u._id)}
-                      key={u._id}
-                    >
+                    <Link to={`/chat/user/${u._id}`} key={u._id}>
                       <div className="flex flex-col gap-1 items-center justify-center">
                         <Avatar user={u} />
                         <p className="text-xs opacity-70">{u.username}</p>
                       </div>
-                    </button>
+                    </Link>
                   )
               )}
             </div>
@@ -143,17 +152,16 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
             style={{ maxHeight: containerRef?.current?.offsetHeight || "100%" }}
           >
             <div className="flex flex-col">
-              {allRooms?.map(room => {
+              {rooms?.map(room => {
                 const otherUser = room.users.find(u => u._id !== user._id);
 
                 return otherUser === user?._id ? null : (
-                  <button
+                  <Link
+                    to={`/chat/room/${room._id}`}
                     className={`px-3 py-3 hover:bg-slate-300 ${
-                      activeRoom?.users?.includes?.(otherUser._id) &&
-                      "bg-slate-200"
+                      roomId === room._id && "bg-slate-200"
                     }`}
                     key={otherUser._id}
-                    onClick={() => onRoomClick(otherUser._id, room._id)}
                   >
                     <div className="flex gap-1 justify-between">
                       <Avatar
@@ -169,7 +177,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
                         <span className="text-xs">18:20 pm</span>
                       </div>
                     </div>
-                  </button>
+                  </Link>
                 );
               })}
             </div>
