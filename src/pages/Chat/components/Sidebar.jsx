@@ -15,7 +15,7 @@ import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 
-const Sidbar = ({ socket, onlineUsers = [] }) => {
+const Sidebar = ({ socket, onlineUsers = [] }) => {
   const dispatch = useDispatch();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
@@ -188,4 +188,4 @@ const Sidbar = ({ socket, onlineUsers = [] }) => {
   );
 };
 
-export default Sidbar;
+export default Sidebar;

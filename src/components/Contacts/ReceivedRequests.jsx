@@ -4,7 +4,7 @@ import Avatar from "@/components/Avatar";
 import { useEffect, useState } from "react";
 import axios from "@/library/http";
 
-const RecievedReqests = ({ socket }) => {
+const ReceivedRequests = ({ socket }) => {
   const [list, setList] = useState();
   const user = useSelector(state => state.auth.user);
 
@@ -69,4 +69,4 @@ const RecievedReqests = ({ socket }) => {
   );
 };
 
-export default RecievedReqests;
+export default ReceivedRequests;

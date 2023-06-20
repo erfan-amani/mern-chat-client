@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import Sidbar from "./components/Sidbar";
+import Sidebar from "./components/Sidebar";
 import { io } from "socket.io-client";
 import { BASE_URL } from "@/library/config";
 import { Outlet } from "react-router-dom";
@@ -44,7 +44,7 @@ const Chat = () => {
           </div>
 
           <div className="h-screen flex-1">
-            <Sidbar socket={socketRef.current} onlineUsers={onlineUsers} />
+            <Sidebar socket={socketRef.current} onlineUsers={onlineUsers} />
           </div>
         </div>
       </div>
