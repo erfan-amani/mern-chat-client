@@ -111,6 +111,7 @@ const Chat = () => {
             <NavSide
               sentRequests={sentRequests}
               receivedRequests={receivedRequests}
+              socket={socketRef.current}
             />
           </div>
 

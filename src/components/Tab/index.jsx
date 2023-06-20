@@ -3,7 +3,7 @@ import { Tab as HLTab } from "@headlessui/react";
 const Tab = ({ headers = [], contents }) => {
   return (
     <HLTab.Group>
-      <HLTab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+      <HLTab.List className="flex space-x-1 rounded-xl bg-neutral-300 p-1">
         {headers.map(header => (
           <HLTab
             key={header}

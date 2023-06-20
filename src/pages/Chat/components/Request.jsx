@@ -11,14 +11,22 @@ const Request = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const sendContactRequest = () => {
+  const sendContactRequest = async () => {
     setLoading(true);
 
-    socket.emit("contact_request", otherUserId, room => {
-      !!room && setActiveRoom(room);
+    // socket.emit("contact_request", otherUserId, room => {
+    //   !!room && setActiveRoom(room);
+
+    //   setLoading(false);
+    // });
+
+    try {
+      await axios.post("contact", { other: otherUserId });
 
       setLoading(false);
-    });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
