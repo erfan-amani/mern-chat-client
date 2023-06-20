@@ -14,6 +14,7 @@ import GeneralSearchModal from "./SearchModal/GeneralSearchModal";
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import axios from "@/library/http";
 
 const Sidebar = ({ socket, onlineUsers = [] }) => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
   const modal = useSelector(state => state.app.modal);
   const [rooms, setRooms] = useState([]);
   const { roomId } = useParams();
+  const isSocketConnected = socket?.connected;
 
   const logout = () => {
     dispatch(logoutAsync());
@@ -46,28 +48,36 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
   };
 
   useEffect(() => {
-    if (!socket?.connected) return;
+    const getRooms = async () => {
+      try {
+        const response = await axios.get("/room/active");
 
-    socket.on("active_rooms", data => {
-      const isSingle = data.length === undefined;
-
-      if (isSingle) {
-        setRooms(prev => {
-          const newList = [...prev];
-          const index = newList.findIndex(r => r._id === data._id);
-
-          if (index !== -1) {
-            newList.splice(index, 1);
-            newList.unshift(data);
-          }
-
-          return newList;
-        });
-      } else {
-        setRooms(data);
+        setRooms(response.data);
+      } catch (err) {
+        console.log(err);
       }
+    };
+
+    getRooms();
+  }, []);
+
+  useEffect(() => {
+    if (!isSocketConnected) return;
+
+    socket.on("room_update", data => {
+      setRooms(prev => {
+        const newList = [...prev];
+        const index = newList.findIndex(r => r._id === data._id);
+
+        if (index !== -1) {
+          newList.splice(index, 1);
+          newList.unshift(data);
+        }
+
+        return newList;
+      });
     });
-  }, [socket?.connected]);
+  }, [isSocketConnected]);
 
   return (
     <div className="flex flex-col">
@@ -154,10 +164,13 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
             <div className="flex flex-col">
               {rooms?.map(room => {
                 const otherUser = room.users.find(u => u._id !== user._id);
+                const isOnline = !!onlineUsers.find(
+                  ou => ou._id === otherUser._id
+                );
 
                 return otherUser === user?._id ? null : (
                   <Link
-                    to={`/chat/room/${room._id}`}
+                    to={`/chat/message/${room._id}`}
                     className={`px-3 py-3 hover:bg-slate-300 ${
                       roomId === room._id && "bg-slate-200"
                     }`}
@@ -167,9 +180,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
                       <Avatar
                         user={otherUser}
                         desc={room.lastMessage.text}
-                        onlineBadge={onlineUsers.find(
-                          ou => ou._id === otherUser._id
-                        )}
+                        onlineBadge={isOnline}
                         withDetail
                       />
 
