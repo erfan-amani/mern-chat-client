@@ -3,11 +3,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { AuthRoute, PrivateRoute } from "./CustomRouter";
 import Chat from "@/pages/Chat";
-import Request from "@/pages/Chat/components/Request";
+import UserProfile from "@/pages/Chat/components/UserProfile";
 import Auth from "@/pages/Auth/Auth";
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";
 import SendMessage from "../pages/Chat/components/SendMessage";
+import Message from "../pages/Chat/components/Message";
 
 const AppRoutes = ({ children }) => {
   const isAuthorized = useSelector(state => !!state.auth.user);
@@ -37,10 +38,12 @@ const AppRoutes = ({ children }) => {
             </PrivateRoute>
           }
         >
-          <Route path="request/:userId" element={<Request />} />
+          <Route path="user/:userId" element={<UserProfile />} />
+          <Route path="message/:roomId" element={<Message />} />
+
           <Route path="room" element={<div>index2</div>}>
-            <Route path="user" element={<Request />} />
-            <Route path="channel" element={<Request />} />
+            <Route path="user" element={<UserProfile />} />
+            <Route path="channel" element={<UserProfile />} />
           </Route>
 
           <Route path="*" element={<SendMessage />} />

@@ -93,16 +93,6 @@ const Chat = () => {
     });
   }, [token]);
 
-  useEffect(() => {
-    if (activeRoom._id) {
-      navigate(
-        activeRoom?.pending
-          ? `/request/${activeRoom._id}`
-          : `/room/${activeRoom._id}`
-      );
-    }
-  }, [activeRoom._id]);
-
   return (
     <div className="flex w-screen h-screen">
       <div className="w-[300px] bg-indigo-50">

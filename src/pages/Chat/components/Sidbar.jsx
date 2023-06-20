@@ -54,7 +54,7 @@ const Sidbar = ({ onlineUsers = [], allRooms, joinRoom, activeRoom }) => {
     joinRoom({ otherUserId, roomId });
   };
   const onOnlineUserClick = userId => {
-    navigate(`/chat/request/${userId}`);
+    navigate(`/chat/user/${userId}`);
   };
 
   return (

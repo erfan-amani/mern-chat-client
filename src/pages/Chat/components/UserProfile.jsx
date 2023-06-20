@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import { Link, useOutletContext, useParams } from "react-router-dom";
 import axios from "@/library/http";
 import Avatar from "@/components/Avatar";
 import { isOnline } from "@/library/helper";
 import moment from "moment";
 
-const Request = () => {
+const UserProfile = () => {
   const { setActiveRoom, socket } = useOutletContext();
   const { userId: otherUserId } = useParams();
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [room, setRoom] = useState({});
 
   const sendContactRequest = async () => {
     setLoading(true);
-
-    // socket.emit("contact_request", otherUserId, room => {
-    //   !!room && setActiveRoom(room);
-
-    //   setLoading(false);
-    // });
 
     try {
       await axios.post("contact", { other: otherUserId });
@@ -40,6 +35,24 @@ const Request = () => {
     getUser();
   }, [otherUserId]);
 
+  useEffect(() => {
+    const getRoom = async () => {
+      try {
+        const response = await axios.get("room", {
+          params: { other: otherUserId },
+        });
+
+        setRoom(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getRoom();
+  }, []);
+
+  console.log(room._id && !room.pending);
+
   return (
     <div className="flex items-center justify-center h-full">
       <div className="min-w-[300px] px-8 py-10 bg-indigo-50 rounded-xl">
@@ -57,19 +70,34 @@ const Request = () => {
             </p>
           </div>
 
-          <button
-            disabled={loading}
-            onClick={sendContactRequest}
-            className={`mt-4 ${
-              loading ? "bg-slate-400 cursor-not-allowed" : "bg-slate-500"
-            } text-white px-6 py-2 rounded-md`}
-          >
-            {loading ? "Loading..." : "Send Request"}
-          </button>
+          {room._id && !room.pending ? (
+            <Link
+              to={`/chat/message/${room._id}`}
+              className={`mt-4 ${
+                loading ? "bg-slate-400 cursor-not-allowed" : "bg-indigo-500"
+              } text-white px-6 py-2 rounded-md`}
+            >
+              Message
+            </Link>
+          ) : (
+            <button
+              disabled={loading}
+              onClick={sendContactRequest}
+              className={`mt-4 ${
+                loading ? "bg-slate-400 cursor-not-allowed" : "bg-indigo-500"
+              } text-white px-6 py-2 rounded-md`}
+            >
+              {loading
+                ? "Loading..."
+                : room.pending
+                ? "Request send"
+                : "Send request"}
+            </button>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default Request;
+export default UserProfile;
