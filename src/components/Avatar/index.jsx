@@ -38,7 +38,7 @@ const Avatar = ({
       </div>
 
       {withDetail && (
-        <div className="flex flex-col items-start justify-between">
+        <div className="flex flex-col items-start gap-1">
           <p className="text-sm font-medium">{user.username}</p>
           <p className="text-xs opacity-80">{desc}</p>
         </div>
