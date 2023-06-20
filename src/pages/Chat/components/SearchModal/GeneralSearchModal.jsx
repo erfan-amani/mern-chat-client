@@ -95,7 +95,7 @@ const GeneralSearchModal = ({ onlineUsers = [], onClose }) => {
                 key={r._id}
                 onClick={() => {
                   onClose();
-                  navigate(`/chat/room/${r._id}`);
+                  navigate(`/chat/message/${r._id}`);
                 }}
               >
                 <div className="flex items-center gap-2">
