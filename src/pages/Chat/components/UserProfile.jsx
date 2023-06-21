@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useOutletContext, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "@/library/http";
 import Avatar from "@/components/Avatar";
 import { isOnline } from "@/library/helper";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const UserProfile = () => {
+  const navigate = useNavigate();
   const { userId: otherUserId } = useParams();
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -15,11 +17,14 @@ const UserProfile = () => {
     setLoading(true);
 
     try {
-      await axios.post("contact", { other: otherUserId });
+      await axios.post("room/contact", { other: otherUserId });
+
+      toast.success("Request successfully sent.");
 
       setLoading(false);
     } catch (err) {
-      console.log(err);
+      toast.error("Request not sent! Please try again later.");
+      setLoading(false);
     }
   };
 
@@ -27,8 +32,13 @@ const UserProfile = () => {
     if (!otherUserId) return;
 
     const getUser = async () => {
-      const response = await axios.get(`user/${otherUserId}`);
-      setUser(response.data);
+      try {
+        const response = await axios.get(`user/${otherUserId}`);
+        setUser(response.data);
+      } catch (err) {
+        toast.error("User not found!");
+        navigate("/chat");
+      }
     };
 
     getUser();
@@ -43,7 +53,8 @@ const UserProfile = () => {
 
         setRoom(response.data);
       } catch (err) {
-        console.log(err);
+        toast.error("Chat not found!");
+        navigate("/chat");
       }
     };
 
@@ -62,10 +73,6 @@ const UserProfile = () => {
               <p className="text-xs opacity-50">
                 Joined At {moment(user.createdAt).format("DD MMMM YYYY")}
               </p>
-
-              <p className="text-sm mt-4 opacity-80">
-                Account is private! Only contacts can send message.
-              </p>
             </div>
 
             {room._id && !room.pending ? (
@@ -78,19 +85,26 @@ const UserProfile = () => {
                 Message
               </Link>
             ) : (
-              <button
-                disabled={loading}
-                onClick={sendContactRequest}
-                className={`mt-4 ${
-                  loading ? "bg-slate-400 cursor-not-allowed" : "bg-indigo-500"
-                } text-white px-6 py-2 rounded-md`}
-              >
-                {loading
-                  ? "Loading..."
-                  : room.pending
-                  ? "Request send"
-                  : "Send request"}
-              </button>
+              <>
+                <p className="text-sm mt-4 opacity-80">
+                  Account is private! Only contacts can send message.
+                </p>
+                <button
+                  disabled={loading}
+                  onClick={sendContactRequest}
+                  className={`mt-4 ${
+                    loading
+                      ? "bg-slate-400 cursor-not-allowed"
+                      : "bg-indigo-500"
+                  } text-white px-6 py-2 rounded-md`}
+                >
+                  {loading
+                    ? "Loading..."
+                    : room.pending
+                    ? "Request send"
+                    : "Send request"}
+                </button>{" "}
+              </>
             )}
           </div>
         </div>
