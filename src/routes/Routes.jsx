@@ -7,8 +7,7 @@ import UserProfile from "@/pages/Chat/components/UserProfile";
 import Auth from "@/pages/Auth/Auth";
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Register";
-import SendMessage from "../pages/Chat/components/SendMessage";
-import Messages from "../pages/Chat/components/Messages";
+import Messages from "@/pages/Chat/components/Messages";
 
 const AppRoutes = ({ children }) => {
   const isAuthorized = useSelector(state => !!state.auth.user);
