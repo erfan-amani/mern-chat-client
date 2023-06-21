@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { login as loginAction } from "@/store/reducers/auth/asyncActions";
 import { resetAuthState } from "@/store/reducers/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import PasswordInputs from "../../components/Input/PasswordInputs";
 
 const Login = () => {
   const { pending, error: loginError } = useSelector(state => state.auth);
@@ -13,9 +14,12 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm({
     resolver: yupResolver(loginSchema),
   });
+
+  console.log(getValues());
 
   const onSubmit = async data => {
     if (pending) return;
@@ -55,6 +59,7 @@ const Login = () => {
             name="username"
             id="username"
             placeholder="Username"
+            autoComplete={false}
             {...register("username")}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
@@ -64,12 +69,13 @@ const Login = () => {
         </div>
 
         <div>
-          <input
+          <PasswordInputs
             type="text"
             name="password"
             id="password"
             placeholder="Password"
-            {...register("password")}
+            autoComplete={false}
+            register={register}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
           {errors.password && (

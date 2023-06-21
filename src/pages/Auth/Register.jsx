@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { register as registerAction } from "@/store/reducers/auth/asyncActions";
 import { resetAuthState } from "@/store/reducers/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import PasswordInputs from "../../components/Input/PasswordInputs";
 
 const Register = () => {
   const { pending, error: registerError } = useSelector(state => state.auth);
@@ -56,6 +57,7 @@ const Register = () => {
             id="username"
             placeholder="Username"
             {...register("username")}
+            autoComplete={false}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
           {errors.username && (
@@ -64,12 +66,13 @@ const Register = () => {
         </div>
 
         <div>
-          <input
+          <PasswordInputs
             type="text"
             name="password"
             id="password"
             placeholder="Password"
-            {...register("password")}
+            autoComplete={false}
+            register={register}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
           {errors.password && (
