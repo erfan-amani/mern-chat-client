@@ -11,12 +11,13 @@ import Dropdown from "@/components/Dropdown";
 import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 import UserModal from "./SearchModal/UserModal";
 import GeneralSearchModal from "./SearchModal/GeneralSearchModal";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "@/library/http";
 
 const Sidebar = ({ socket, onlineUsers = [] }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const containerRef = useRef();
   const user = useSelector(state => state.auth.user);
@@ -30,7 +31,11 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
 
   const openUsersModal = () => {
     modal.show(
-      <UserModal onlineUsers={onlineUsers} onClose={modal.hide} />,
+      <UserModal
+        onlineUsers={onlineUsers}
+        onClose={modal.hide}
+        navigate={navigate}
+      />,
       false,
       null,
       true
