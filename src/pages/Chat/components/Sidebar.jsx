@@ -26,9 +26,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
   const { roomId } = useParams();
   const isSocketConnected = socket?.connected;
 
-  const logout = () => {
-    dispatch(logoutAsync());
-  };
+  const logout = () => dispatch(logoutAsync());
 
   const openUsersModal = () => {
     modal.show(
@@ -55,7 +53,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
 
         setRooms(response.data);
       } catch (err) {
-        console.log(err);
+        setRooms([]);
       }
     };
 

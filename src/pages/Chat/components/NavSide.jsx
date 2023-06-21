@@ -18,9 +18,7 @@ const NavSide = ({ socket }) => {
   const modal = useSelector(state => state.app.modal);
   const dispatch = useDispatch();
 
-  const logout = () => {
-    dispatch(logoutAsync());
-  };
+  const logout = () => dispatch(logoutAsync());
 
   const openContacts = () => {
     modal.show(

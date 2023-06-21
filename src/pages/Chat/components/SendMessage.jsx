@@ -8,6 +8,8 @@ const SendMessage = () => {
   const onSubmit = event => {
     event.preventDefault();
 
+    if (!roomId) return;
+
     const inputEl = event.target.message;
     const text = inputEl.value;
 

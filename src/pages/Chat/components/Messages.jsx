@@ -21,6 +21,8 @@ const Messages = () => {
   const isSocketConnected = socket?.connected;
 
   const readMessage = messageId => {
+    if (!messageId) return;
+
     socket.emit("read", messageId, error => {
       if (error) {
         console.log(error);
@@ -34,7 +36,6 @@ const Messages = () => {
         const response = await axios.get("room/users", {
           params: { id: roomId },
         });
-        const user = response.data;
 
         setOtherUser(response.data?.[0]);
       } catch (err) {
@@ -42,37 +43,43 @@ const Messages = () => {
       }
     };
 
-    getOtherUser();
+    !!roomId && getOtherUser();
   }, []);
 
   useEffect(() => {
     const initializeMessages = async () => {
-      const response = await axios.get("/message", {
-        params: { room: roomId },
-      });
-      const data = response.data || [];
+      try {
+        const response = await axios.get("/message", {
+          params: { room: roomId },
+        });
+        const data = response.data || [];
 
-      setMessages(data);
+        setMessages(data);
 
-      setTimeout(() => {
-        containerRef?.current?.scrollTo?.(
-          0,
-          containerRef?.current?.scrollHeight
-        );
-      });
+        setTimeout(() => {
+          containerRef?.current?.scrollTo?.(
+            0,
+            containerRef?.current?.scrollHeight
+          );
+        });
+      } catch (err) {
+        setMessages([]);
+      }
     };
 
-    if (!!roomId) initializeMessages();
+    !!roomId && initializeMessages();
   }, [roomId]);
 
   useEffect(() => {
     if (!isSocketConnected) return;
 
     socket.on("message", message => {
-      if (!!message) setMessages(prev => [...prev, message]);
+      !!message && setMessages(prev => [...prev, message]);
     });
 
-    socket.on("updateMessage", updatedMessage => {
+    socket.on("message_update", updatedMessage => {
+      if (!updatedMessage) return;
+
       setMessages(prev => {
         const newList = [...prev];
         const index = newList.findIndex(m => m._id === updatedMessage._id);
