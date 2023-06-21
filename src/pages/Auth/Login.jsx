@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { login as loginAction } from "@/store/reducers/auth/asyncActions";
 import { resetAuthState } from "@/store/reducers/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import PasswordInputs from "../../components/Input/PasswordInputs";
+import PasswordInputs from "@/components/Input/PasswordInputs";
+import Skeleton from "@/components/Skeleton";
 
 const Login = () => {
   const { pending, error: loginError } = useSelector(state => state.auth);
@@ -83,13 +84,23 @@ const Login = () => {
           )}
         </div>
 
-        <button
-          type="submit"
-          className="p-2 bg-indigo-500 text-white rounded-md disabled:bg-slate-300 disabled:cursor-not-allowed"
-          disabled={pending}
-        >
-          Login
-        </button>
+        {pending ? (
+          <Skeleton
+            width="100%"
+            height="40px"
+            classNames="flex items-center justify-center text-white cursor-default"
+          >
+            Loading...
+          </Skeleton>
+        ) : (
+          <button
+            type="submit"
+            className="p-2 bg-indigo-500 text-white rounded-md disabled:bg-slate-300 disabled:cursor-not-allowed"
+            disabled={pending}
+          >
+            Login
+          </button>
+        )}
       </form>
     </>
   );
