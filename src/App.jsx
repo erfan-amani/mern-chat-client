@@ -4,6 +4,7 @@ import useModal from "./hooks/App/useModal";
 import useUser from "./hooks/App/useUser";
 import AppRoutes from "./routes/Routes";
 import AppModal from "./components/Modal";
+import Toast from "./components/Toast";
 
 function App() {
   const modalRef = useModal();
@@ -14,6 +15,7 @@ function App() {
   return (
     <>
       <AppModal ref={modalRef} />
+      <Toast />
 
       <AppRoutes />
     </>
