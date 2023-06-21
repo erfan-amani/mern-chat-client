@@ -41,8 +41,9 @@ const getAvatarColor = (...ids) => {
   return manyColors[index];
 };
 
-const isOnline = (all, user) => {
-  const find = all.map(u => u._id === user._id);
+const isOnline = (onlineUsers = [], user) => {
+  const find = onlineUsers.find(ou => ou._id === user._id);
+  console.log(find);
   return !!find;
 };
 

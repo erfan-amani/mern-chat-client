@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import axios from "@/library/http";
 import Avatar from "@/components/Avatar";
 import { isOnline } from "@/library/helper";
@@ -8,6 +13,7 @@ import { toast } from "react-toastify";
 
 const UserProfile = () => {
   const navigate = useNavigate();
+  const { onlineUsers = [] } = useOutletContext() || {};
   const { userId: otherUserId } = useParams();
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -67,7 +73,7 @@ const UserProfile = () => {
       <div className="flex items-center justify-center h-full">
         <div className="min-w-[300px] px-8 py-10 bg-indigo-50 rounded-xl">
           <div className="flex flex-col gap-4 items-center justify-center">
-            <Avatar user={user} big onlineBadge={isOnline} />
+            <Avatar user={user} big onlineBadge={isOnline(onlineUsers, user)} />
 
             <div className="flex flex-col items-center justify-center">
               <p className="text-xl font-medium">{user.username}</p>
