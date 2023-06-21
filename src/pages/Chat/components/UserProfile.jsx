@@ -17,10 +17,11 @@ const UserProfile = () => {
     setLoading(true);
 
     try {
-      await axios.post("room/contact", { other: otherUserId });
+      const response = await axios.post("room/contact", { other: otherUserId });
+
+      setRoom(response.data);
 
       toast.success("Request successfully sent.");
-
       setLoading(false);
     } catch (err) {
       toast.error("Request not sent! Please try again later.");
@@ -90,18 +91,18 @@ const UserProfile = () => {
                   Account is private! Only contacts can send message.
                 </p>
                 <button
-                  disabled={loading}
+                  disabled={loading || room.pending}
                   onClick={sendContactRequest}
                   className={`mt-4 ${
                     loading
                       ? "bg-slate-400 cursor-not-allowed"
                       : "bg-indigo-500"
-                  } text-white px-6 py-2 rounded-md`}
+                  } text-white px-6 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed`}
                 >
                   {loading
                     ? "Loading..."
                     : room.pending
-                    ? "Request send"
+                    ? "Request sent"
                     : "Send request"}
                 </button>{" "}
               </>
