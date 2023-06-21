@@ -39,13 +39,7 @@ const AppRoutes = ({ children }) => {
           }
         >
           <Route path="user/:userId" element={<UserProfile />} />
-
           <Route path="message/:roomId" element={<Messages />} />
-
-          <Route path="room" element={<div>index2</div>}>
-            <Route path="user" element={<UserProfile />} />
-            <Route path="channel" element={<UserProfile />} />
-          </Route>
         </Route>
 
         <Route
