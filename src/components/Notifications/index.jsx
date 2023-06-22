@@ -1,17 +1,27 @@
+import { useState } from "react";
 import AllNotifications from "./All";
+import SingleNotification from "./Single";
 
 const Notifications = () => {
+  const [notifId, setNotifId] = useState(null);
+
+  const openNotification = id => {
+    setNotifId(id);
+  };
+  const closeNotification = () => {
+    setNotifId(null);
+  };
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between">
-        <h3>Notifications</h3>
-
-        <button className="text-sm text-indigo-500">Mark as read</button>
-      </div>
-
-      <div>
-        <AllNotifications />
-      </div>
+    <div>
+      {notifId ? (
+        <SingleNotification
+          id={notifId}
+          closeNotification={closeNotification}
+        />
+      ) : (
+        <AllNotifications openNotification={openNotification} />
+      )}
     </div>
   );
 };
