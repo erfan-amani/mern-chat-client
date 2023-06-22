@@ -5,6 +5,7 @@ import useUser from "./hooks/App/useUser";
 import AppRoutes from "./routes/Routes";
 import AppModal from "./components/Modal";
 import Toast from "./components/Toast";
+import SocketContextProvider from "./context/socket/SocketContextProvider";
 
 function App() {
   const modalRef = useModal();
@@ -13,12 +14,12 @@ function App() {
   useLanguage();
 
   return (
-    <>
+    <SocketContextProvider>
       <AppModal ref={modalRef} />
       <Toast />
 
       <AppRoutes />
-    </>
+    </SocketContextProvider>
   );
 }
 

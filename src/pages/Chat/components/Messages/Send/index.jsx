@@ -20,7 +20,7 @@ const SendMessage = () => {
     inputEl.focus();
 
     // send message
-    socket.emit("sendMessage", { text, room: roomId });
+    socket.emit("send_message", { text, room: roomId });
   };
 
   return (

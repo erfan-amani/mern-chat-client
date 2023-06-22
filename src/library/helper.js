@@ -43,7 +43,6 @@ const getAvatarColor = (...ids) => {
 
 const isOnline = (onlineUsers = [], user) => {
   const find = onlineUsers.find(ou => ou._id === user._id);
-  console.log(find);
   return !!find;
 };
 
