@@ -14,7 +14,6 @@ const Chat = () => {
     if (!socket) return;
 
     socket.on("online_users", users => {
-      console.log(onlineUsers);
       setOnlineUsers(users);
     });
 

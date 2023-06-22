@@ -20,8 +20,6 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  console.log(getValues());
-
   const onSubmit = async data => {
     if (pending) return;
 
