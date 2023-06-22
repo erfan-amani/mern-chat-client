@@ -13,8 +13,12 @@ import { logoutAsync } from "@/store/reducers/auth/asyncActions";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Contacts from "@/components/Contacts";
+import Notifications from "@/components/Notifications";
 
 const NavSide = ({ socket }) => {
+  const unreadNotifications = useSelector(
+    state => state.auth.unreadNotifications
+  );
   const modal = useSelector(state => state.app.modal);
   const dispatch = useDispatch();
 
@@ -28,6 +32,10 @@ const NavSide = ({ socket }) => {
     );
   };
 
+  const openNotifications = () => {
+    modal.show(<Notifications />, false, null, true);
+  };
+
   return (
     <div className="py-2 h-full flex flex-col items-center justify-between">
       <button>
@@ -39,7 +47,11 @@ const NavSide = ({ socket }) => {
           <HomeIcon className="w-5 h-5 text-slate-500 stroke-2" />
         </Link>
 
-        <button>
+        <button onClick={openNotifications} className="relative">
+          {!!unreadNotifications && (
+            <div className="absolute top-0 right-0 w-[10px] h-[10px] rounded-full bg-indigo-500" />
+          )}
+
           <BellIcon className="w-5 h-5 text-slate-500 stroke-2" />
         </button>
 
