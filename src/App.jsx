@@ -5,21 +5,22 @@ import useUser from "./hooks/App/useUser";
 import AppRoutes from "./routes/Routes";
 import AppModal from "./components/Modal";
 import Toast from "./components/Toast";
-import SocketContextProvider from "./context/socket/SocketContextProvider";
+import useNotification from "./hooks/App/useNotification";
 
 function App() {
   const modalRef = useModal();
   useUser();
   useTheme();
   useLanguage();
+  useNotification();
 
   return (
-    <SocketContextProvider>
+    <>
       <AppModal ref={modalRef} />
       <Toast />
 
       <AppRoutes />
-    </SocketContextProvider>
+    </>
   );
 }
 

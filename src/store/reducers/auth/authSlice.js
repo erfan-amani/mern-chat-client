@@ -4,7 +4,7 @@ import { getUser, register, login } from "./asyncActions";
 const initialState = {
   user: null,
   accessToken: null,
-  notifications: [],
+  unreadNotifications: 0,
   status: "idle",
   pending: false,
   error: null,
@@ -14,16 +14,14 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setNotifications: (state, { payload }) => {
-      const newNotif = Array.isArray(payload) ? payload : [payload];
-
-      state.notifications = [...state.notifications, ...newNotif];
+    newNotification: state => {
+      state.unreadNotifications++;
     },
-    readNotifications: (state, { payload }) => {
-      state.notifications = state.notifications.filter(n => n.id !== payload);
+    readNotification: state => {
+      state.unreadNotifications--;
     },
     readAllNotifications: state => {
-      state.notifications = [];
+      state.unreadNotifications = 0;
     },
     logout: state => {
       state.status = "idle";
@@ -110,9 +108,9 @@ const authSlice = createSlice({
 });
 
 export const {
-  setNotifications,
+  newNotification,
+  readNotification,
   readAllNotifications,
-  readNotifications,
   logout,
   setReferral,
   resetAuthState,
