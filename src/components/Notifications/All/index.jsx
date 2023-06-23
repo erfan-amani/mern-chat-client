@@ -40,7 +40,11 @@ const AllNotifications = ({ openNotification }) => {
         ) : (
           <div className="flex flex-col">
             {list.map((notif, index) => {
-              const time = moment(notif.createdAt).fromNow();
+              const months = moment().diff(notif.createdAt, "months");
+              const time =
+                months > 0
+                  ? moment(notif.createdAt).format("YYYY MMMM DD")
+                  : moment(notif.createdAt).fromNow();
 
               return (
                 <Fragment key={notif._id}>
