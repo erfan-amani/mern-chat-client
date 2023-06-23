@@ -10,7 +10,7 @@ const ReceivedRequests = ({ socket }) => {
 
   const removeRequest = async id => {
     try {
-      await axios.delete(`room/contact/${id}`);
+      await axios.delete(`room/contact/${id}`, { params: { type: "REJECT" } });
     } catch (err) {
       console.log(err);
     }

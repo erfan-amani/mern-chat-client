@@ -4,9 +4,17 @@ import axios from "@/library/http";
 import { useSelector } from "react-redux";
 import Avatar from "@/components/Avatar";
 
-const MyContacts = ({ socket }) => {
+const MyContacts = () => {
   const user = useSelector(state => state.auth.user);
   const [list, setList] = useState([]);
+
+  const removeRequest = async id => {
+    try {
+      await axios.delete(`room/contact/${id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     const getContacts = async () => {
