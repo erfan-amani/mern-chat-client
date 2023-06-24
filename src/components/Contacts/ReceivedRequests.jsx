@@ -4,10 +4,12 @@ import Avatar from "@/components/Avatar";
 import { useEffect, useState } from "react";
 import axios from "@/library/http";
 import { toast } from "react-toastify";
+import Loading from "./Loading";
 
 const ReceivedRequests = () => {
   const [list, setList] = useState();
   const [update, setUpdate] = useState(0);
+  const [loading, setLoading] = useState(false);
   const user = useSelector(state => state.auth.user);
 
   const removeRequest = async id => {
@@ -33,14 +35,23 @@ const ReceivedRequests = () => {
 
   useEffect(() => {
     const getContacts = async () => {
-      const response = await axios.get("room/contact/received");
+      setLoading(true);
+      try {
+        const response = await axios.get("room/contact/received");
 
-      setList(response.data);
+        setList(response.data);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+      }
     };
 
     getContacts();
   }, [update]);
 
+  if (loading) {
+    return <Loading />;
+  }
   if (!list?.length) {
     return <div className="text-center">No request!</div>;
   }

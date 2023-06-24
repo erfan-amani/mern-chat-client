@@ -4,10 +4,12 @@ import axios from "@/library/http";
 import { useSelector } from "react-redux";
 import Avatar from "@/components/Avatar";
 import { toast } from "react-toastify";
+import Loading from "./Loading";
 
 const MyContacts = () => {
   const user = useSelector(state => state.auth.user);
   const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(0);
 
   const removeRequest = async id => {
@@ -23,16 +25,25 @@ const MyContacts = () => {
 
   useEffect(() => {
     const getContacts = async () => {
-      const response = await axios.get("room/all", {
-        params: { pending: false },
-      });
+      setLoading(true);
+      try {
+        const response = await axios.get("room/all", {
+          params: { pending: false },
+        });
 
-      setList(response.data);
+        setList(response.data);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+      }
     };
 
     getContacts();
   }, [update]);
 
+  if (loading) {
+    return <Loading />;
+  }
   if (!list.length) {
     return <div className="text-center">No contact!</div>;
   }
