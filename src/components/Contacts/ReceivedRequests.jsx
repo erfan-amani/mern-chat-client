@@ -3,14 +3,19 @@ import { getOtherUser } from "@/library/helper";
 import Avatar from "@/components/Avatar";
 import { useEffect, useState } from "react";
 import axios from "@/library/http";
+import { toast } from "react-toastify";
 
-const ReceivedRequests = ({ socket }) => {
+const ReceivedRequests = () => {
   const [list, setList] = useState();
+  const [update, setUpdate] = useState(0);
   const user = useSelector(state => state.auth.user);
 
   const removeRequest = async id => {
     try {
       await axios.delete(`room/contact/${id}`, { params: { type: "REJECT" } });
+
+      toast.success("Request successfully removed.");
+      setUpdate(prev => prev + 1);
     } catch (err) {
       console.log(err);
     }
@@ -18,6 +23,9 @@ const ReceivedRequests = ({ socket }) => {
   const acceptRequest = async id => {
     try {
       await axios.post("room/contact/accept", { id });
+
+      toast.success("Request successfully accepted.");
+      setUpdate(prev => prev + 1);
     } catch (err) {
       console.log(err);
     }
@@ -31,7 +39,7 @@ const ReceivedRequests = ({ socket }) => {
     };
 
     getContacts();
-  }, []);
+  }, [update]);
 
   if (!list?.length) {
     return <div className="text-center">No request!</div>;

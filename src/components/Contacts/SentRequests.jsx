@@ -3,14 +3,19 @@ import { getOtherUser } from "@/library/helper";
 import Avatar from "@/components/Avatar";
 import { useEffect, useState } from "react";
 import axios from "@/library/http";
+import { toast } from "react-toastify";
 
-const SentRequests = ({ socket }) => {
+const SentRequests = () => {
   const [list, setList] = useState([]);
+  const [update, setUpdate] = useState(0);
   const user = useSelector(state => state.auth.user);
 
   const removeRequest = async id => {
     try {
       await axios.delete(`room/contact/${id}`);
+
+      toast.success("Request successfully removed.");
+      setUpdate(prev => prev + 1);
     } catch (err) {}
   };
 
@@ -22,7 +27,7 @@ const SentRequests = ({ socket }) => {
     };
 
     getContacts();
-  }, []);
+  }, [update]);
 
   if (!list.length) {
     return <div className="text-center">No request!</div>;

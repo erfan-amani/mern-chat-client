@@ -3,14 +3,19 @@ import { getOtherUser } from "@/library/helper";
 import axios from "@/library/http";
 import { useSelector } from "react-redux";
 import Avatar from "@/components/Avatar";
+import { toast } from "react-toastify";
 
 const MyContacts = () => {
   const user = useSelector(state => state.auth.user);
   const [list, setList] = useState([]);
+  const [update, setUpdate] = useState(0);
 
   const removeRequest = async id => {
     try {
       await axios.delete(`room/contact/${id}`);
+
+      toast.success("Contact successfully removed.");
+      setUpdate(prev => prev + 1);
     } catch (err) {
       console.log(err);
     }
@@ -26,7 +31,7 @@ const MyContacts = () => {
     };
 
     getContacts();
-  }, []);
+  }, [update]);
 
   if (!list.length) {
     return <div className="text-center">No contact!</div>;
