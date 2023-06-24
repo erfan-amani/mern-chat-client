@@ -22,7 +22,7 @@ const Tab = ({ headers = [], contents }) => {
 
       <HLTab.Panels className="mt-2 min-h-[100px]">
         {contents.map((component, i) => (
-          <HLTab.Panel key={i} className="rounded-xl bg-white p-3">
+          <HLTab.Panel key={i} className="rounded-xl bg-white py-3">
             {component}
           </HLTab.Panel>
         ))}
