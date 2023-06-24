@@ -7,6 +7,16 @@ const AllNotifications = ({ openNotification }) => {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const readAll = async () => {
+    try {
+      const response = await axios.get("notification/readAll");
+
+      setList(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     const getList = async () => {
       setLoading(true);
@@ -31,7 +41,9 @@ const AllNotifications = ({ openNotification }) => {
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <h3>Notifications</h3>
-        <button className="text-sm text-indigo-500">Mark as read</button>
+        <button className="text-sm text-indigo-500" onClick={readAll}>
+          Mark as read
+        </button>
       </div>
 
       <div className="min-h-[200px]">
