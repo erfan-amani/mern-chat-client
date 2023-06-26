@@ -5,10 +5,13 @@ import { useSelector } from "react-redux";
 import Avatar from "@/components/Avatar";
 import { toast } from "react-toastify";
 import Loading from "./Loading";
+import CompactPagination from "@/components/Pagination/CompactPagination";
+import usePage from "@/hooks/usePage";
 
 const MyContacts = () => {
+  const { page, onPageChange } = usePage();
   const user = useSelector(state => state.auth.user);
-  const [list, setList] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(0);
 
@@ -28,10 +31,10 @@ const MyContacts = () => {
       setLoading(true);
       try {
         const response = await axios.get("room/all", {
-          params: { pending: false },
+          params: { pending: false, page, limit: 10 },
         });
 
-        setList(response.data);
+        setData(response.data);
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -41,33 +44,51 @@ const MyContacts = () => {
     getContacts();
   }, [update]);
 
-  if (loading) {
-    return <Loading />;
+  if ("loading") {
+    return (
+      <div className="min-h-[250px]">
+        <Loading />
+      </div>
+    );
   }
-  if (!list.length) {
-    return <div className="text-center">No contact!</div>;
+  if (!data?.data?.length) {
+    return (
+      <div className="min-h-[250px]">
+        <div className="text-center">No contact!</div>
+      </div>
+    );
   }
 
   return (
     <div className="mt-2">
-      {list.map(room => {
-        const other = getOtherUser(room.users, user);
+      <div className="min-h-[250px]">
+        {data.data.map(room => {
+          const other = getOtherUser(room.users, user);
 
-        return (
-          <div key={other._id}>
-            <div className="flex justify-between items-center">
-              <Avatar user={other} withDetail desc="" />
+          return (
+            <div key={other._id}>
+              <div className="flex justify-between items-center">
+                <Avatar user={other} withDetail desc="" />
 
-              <button
-                onClick={() => removeRequest(room._id)}
-                className="bg-gray-100 px-3 py-2 rounded-md text-xs"
-              >
-                Remove
-              </button>
+                <button
+                  onClick={() => removeRequest(room._id)}
+                  className="bg-gray-100 px-3 py-2 rounded-md text-xs"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+
+      <div className="mx-auto">
+        <CompactPagination
+          page={page}
+          totalPage={data.totalPage}
+          onChange={onPageChange}
+        />
+      </div>
     </div>
   );
 };

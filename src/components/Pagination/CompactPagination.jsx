@@ -9,7 +9,7 @@ const CompactPagination = ({ page, totalPage, onChange }) => {
   };
 
   return (
-    <div className="flex flex-1 gap-2 mt-4">
+    <div className="flex flex-1 gap-2 mt-4 justify-center">
       <button
         onClick={prevHandler}
         disabled={page === 1}

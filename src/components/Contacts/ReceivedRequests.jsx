@@ -5,9 +5,12 @@ import { useEffect, useState } from "react";
 import axios from "@/library/http";
 import { toast } from "react-toastify";
 import Loading from "./Loading";
+import CompactPagination from "@/components/Pagination/CompactPagination";
+import usePage from "@/hooks/usePage";
 
 const ReceivedRequests = () => {
-  const [list, setList] = useState();
+  const { page, onPageChange } = usePage();
+  const [data, setData] = useState();
   const [update, setUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const user = useSelector(state => state.auth.user);
@@ -37,9 +40,11 @@ const ReceivedRequests = () => {
     const getContacts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("room/contact/received");
+        const response = await axios.get("room/contact/received", {
+          params: { page, limit: 10 },
+        });
 
-        setList(response.data);
+        setData(response.data);
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -50,40 +55,58 @@ const ReceivedRequests = () => {
   }, [update]);
 
   if (loading) {
-    return <Loading />;
+    return (
+      <div className="min-h-[250px]">
+        <Loading />
+      </div>
+    );
   }
-  if (!list?.length) {
-    return <div className="text-center">No request!</div>;
+  if (!data?.data?.length) {
+    return (
+      <div className="min-h-[250px]">
+        <div className="text-center">No request!</div>
+      </div>
+    );
   }
 
   return (
     <div>
-      {list.map(room => {
-        const other = getOtherUser(room.users, user);
+      <div className="min-h-[250px]">
+        {data?.data.map(room => {
+          const other = getOtherUser(room.users, user);
 
-        return (
-          <div key={other._id}>
-            <div className="flex justify-between items-center">
-              <Avatar user={other} withDetail desc="" />
+          return (
+            <div key={other._id}>
+              <div className="flex justify-between items-center">
+                <Avatar user={other} withDetail desc="" />
 
-              <div className="flex gap-1">
-                <button
-                  onClick={() => removeRequest(room.id)}
-                  className="bg-gray-100 px-3 py-2 rounded-md text-xs"
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={() => acceptRequest(room.id)}
-                  className="bg-indigo-400 text-white px-3 py-2 rounded-md text-xs"
-                >
-                  Accept
-                </button>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => removeRequest(room.id)}
+                    className="bg-gray-100 px-3 py-2 rounded-md text-xs"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => acceptRequest(room.id)}
+                    className="bg-indigo-400 text-white px-3 py-2 rounded-md text-xs"
+                  >
+                    Accept
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+
+      <div className="mx-auto">
+        <CompactPagination
+          page={page}
+          totalPage={data.totalPage}
+          onChange={onPageChange}
+        />
+      </div>
     </div>
   );
 };
