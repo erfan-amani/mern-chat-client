@@ -52,7 +52,7 @@ const ReceivedRequests = () => {
     };
 
     getContacts();
-  }, [update]);
+  }, [page, update]);
 
   if (loading) {
     return (

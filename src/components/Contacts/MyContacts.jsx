@@ -42,7 +42,7 @@ const MyContacts = () => {
     };
 
     getContacts();
-  }, [update]);
+  }, [page, update]);
 
   if ("loading") {
     return (
