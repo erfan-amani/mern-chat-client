@@ -44,7 +44,7 @@ const MyContacts = () => {
     getContacts();
   }, [page, update]);
 
-  if ("loading") {
+  if (loading) {
     return (
       <div className="min-h-[250px]">
         <Loading />
