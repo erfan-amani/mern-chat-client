@@ -52,7 +52,7 @@ const AllNotifications = ({ openNotification }) => {
       </div>
 
       <div>
-        {!data?.data?.length ? (
+        {!data?.total ? (
           <div>No notification found!</div>
         ) : (
           <div className="flex flex-col gap-2">

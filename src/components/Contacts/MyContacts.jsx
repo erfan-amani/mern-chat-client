@@ -51,7 +51,7 @@ const MyContacts = () => {
       </div>
     );
   }
-  if (!data?.data?.length) {
+  if (!data?.total) {
     return (
       <div className="min-h-[250px]">
         <div className="text-center">No contact!</div>
