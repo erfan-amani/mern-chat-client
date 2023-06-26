@@ -1,17 +1,14 @@
 import axios from "@/library/http";
 import moment from "moment/moment";
 import { useState, useEffect, Fragment } from "react";
-import CompactPagination from "../../Pagination/CompactPagination";
+import usePage from "@/hooks/usePage";
+import CompactPagination from "@/components/Pagination/CompactPagination";
 import Loading from "./Loading";
 
 const AllNotifications = ({ openNotification }) => {
-  const [page, setPage] = useState(1);
+  const { page, onPageChange } = usePage();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const onPageChange = page => {
-    setPage(page);
-  };
 
   const readAll = async () => {
     try {
