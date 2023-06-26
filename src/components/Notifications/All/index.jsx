@@ -1,39 +1,47 @@
 import axios from "@/library/http";
 import moment from "moment/moment";
 import { useState, useEffect, Fragment } from "react";
+import CompactPagination from "../../Pagination/CompactPagination";
 import Loading from "./Loading";
 
 const AllNotifications = ({ openNotification }) => {
-  const [list, setList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const onPageChange = page => {
+    setPage(page);
+  };
 
   const readAll = async () => {
     try {
       const response = await axios.get("notification/readAll");
 
-      setList(response.data);
+      setData(response.data);
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    const getList = async () => {
+    const getData = async () => {
       setLoading(true);
 
       try {
-        const response = await axios.get("notification");
+        const response = await axios.get("notification", {
+          params: { page, limit: 5 },
+        });
 
-        setList(response.data);
+        setData(response.data);
         setLoading(false);
       } catch (error) {
-        setList([]);
+        setData([]);
         setLoading(false);
       }
     };
 
-    getList();
-  }, []);
+    getData();
+  }, [page]);
 
   if (loading) return <Loading />;
 
@@ -46,46 +54,56 @@ const AllNotifications = ({ openNotification }) => {
         </button>
       </div>
 
-      <div className="min-h-[200px]">
-        {!list.length ? (
+      <div>
+        {!data?.data?.length ? (
           <div>No notification found!</div>
         ) : (
-          <div className="flex flex-col">
-            {list.map((notif, index) => {
-              const months = moment().diff(notif.createdAt, "months");
-              const time =
-                months > 0
-                  ? moment(notif.createdAt).format("YYYY MMMM DD")
-                  : moment(notif.createdAt).fromNow();
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col min-h-[200px]">
+              {data?.data?.map((notif, index) => {
+                const months = moment().diff(notif.createdAt, "months");
+                const time =
+                  months > 0
+                    ? moment(notif.createdAt).format("YYYY MMMM DD")
+                    : moment(notif.createdAt).fromNow();
 
-              return (
-                <Fragment key={notif._id}>
-                  <button
-                    className="flex flex-col gap-1"
-                    onClick={() => openNotification(notif._id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-[10px] h-[10px] rounded-full ${
-                          notif.read ? "bg-gray-400" : "bg-indigo-500"
-                        }`}
-                      />
-                      <p>{notif.title}</p>
-                    </div>
-                    <p className="truncate max-w-[400px] text-sm opacity-70">
-                      {notif.description}
-                    </p>
-                    <p className="text-xs opacity-60">{time}</p>
-                  </button>
+                return (
+                  <Fragment key={notif._id}>
+                    <button
+                      className="flex flex-col gap-1"
+                      onClick={() => openNotification(notif._id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-[10px] h-[10px] rounded-full ${
+                            notif.read ? "bg-gray-400" : "bg-indigo-500"
+                          }`}
+                        />
+                        <p>{notif.title}</p>
+                      </div>
+                      <p className="truncate max-w-[400px] text-sm opacity-70">
+                        {notif.description}
+                      </p>
+                      <p className="text-xs opacity-60">{time}</p>
+                    </button>
 
-                  {index !== list.length - 1 && (
-                    <div className="w-full my-5">
-                      <div className="w-[90%] h-[2px] bg-gray-200 mx-auto" />
-                    </div>
-                  )}
-                </Fragment>
-              );
-            })}
+                    {index !== data?.data?.length - 1 && (
+                      <div className="w-full my-5">
+                        <div className="w-[90%] h-[2px] bg-gray-200 mx-auto" />
+                      </div>
+                    )}
+                  </Fragment>
+                );
+              })}
+            </div>
+
+            <div className="mx-auto">
+              <CompactPagination
+                page={page}
+                totalPage={data.totalPage}
+                onChange={onPageChange}
+              />
+            </div>
           </div>
         )}
       </div>
