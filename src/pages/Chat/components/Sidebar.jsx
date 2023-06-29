@@ -75,8 +75,9 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
 
         if (index !== -1) {
           newList.splice(index, 1);
-          newList.unshift(room);
         }
+
+        newList.unshift(room);
 
         return newList;
       });
@@ -89,7 +90,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
   }, [isSocketConnected]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-screen">
       <div className="border-b-2 border-white h-[66px]">
         <div className="flex items-center p-3">
           <div className="flex-1">
@@ -161,7 +162,7 @@ const Sidebar = ({ socket, onlineUsers = [] }) => {
       </div>
 
       <div className="py-3 flex-1 overflow-hidden" ref={containerRef}>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 h-full">
           <div className="px-3 flex justify-between items-center">
             <p className="text-sm font-medium">Messages</p>
           </div>
