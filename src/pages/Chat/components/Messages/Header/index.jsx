@@ -33,7 +33,7 @@ function Header() {
     };
 
     !!roomId && getOtherUser();
-  }, []);
+  }, [roomId]);
 
   return (
     <div className="p-3 border-b-2 border-indigo-100 w-full h-[66px]">
